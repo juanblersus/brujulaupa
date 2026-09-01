@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brújula UPAEP - Contención y Exploración</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome para Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind Config Personalizada -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        'upaep-red': '#E3000F',
+                        'upaep-dark': '#1A1A1A',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        body {
+            background-color: #F8FAFC;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .glass-modal {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .pulse-soft {
+            animation: pulseSoft 2s infinite;
+        }
+        
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen pb-20 md:pb-0">
+
+    <nav class="glass-header sticky top-0 z-40 w-full transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigate('home')">
+                    <div class="w-10 h-10 bg-upaep-red text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-red-500/30 group-hover:rotate-12 transition-transform duration-300">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <span class="ml-3 font-extrabold text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">UPAEP</span></span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="navigate('home')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Inicio</button>
+                    <button onclick="navigate('mentors')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Águilas Guía</button>
+                    <button onclick="navigate('simulator')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Simulador</button>
+                    <button onclick="navigate('resources')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Recursos</button>
+                    <button onclick="navigate('messages')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all relative">
+                        Mensajes
+                        <span class="absolute top-2 right-1.5 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+
+                <!-- User Profile & SOS -->
+                <div class="flex items-center space-x-3 sm:space-x-5">
+                    <!-- Botón SOS -->
+                    <button onclick="showToast('Línea de Ayuda UPAEP: 800-123-4567')" class="hidden md:flex bg-red-50 text-upaep-red border border-red-100 hover:bg-red-100 px-3 lg:px-4 py-2 rounded-xl text-sm font-bold transition-colors items-center gap-2">
+                        <i class="fas fa-phone-alt"></i> <span class="hidden lg:inline">SOS</span>
+                    </button>
+                    
+                    <!-- Separador visual -->
+                    <div class="hidden md:block w-px h-6 bg-gray-200"></div>
+
+                    <!-- Botón de Perfil con Info -->
+                    <button onclick="navigate('profile')" class="flex items-center gap-3 text-left group">
+                        <div class="hidden sm:block text-right">
+                            <p class="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-upaep-red transition-colors">Juan Carlos</p>
+                            <p class="text-xs text-gray-500 font-medium leading-none">Comunicación</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden group-hover:ring-2 group-hover:ring-upaep-red group-hover:ring-offset-2 transition-all shrink-0">
+                            <img src="https://placehold.co/100x100/334155/ffffff?text=JC" alt="Perfil" class="w-full h-full object-cover">
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Navegación Móvil (Bottom Bar) -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full glass-header border-t border-gray-200 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-end h-16 pb-2 px-2">
+            <button onclick="navigate('home')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="home">
+                <i class="fas fa-home text-xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Inicio</span>
+            </button>
+            <button onclick="navigate('mentors')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="mentors">
+                <i class="fas fa-users text-xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Águilas</span>
+            </button>
+            
+            <!-- Botón central Simulador Destacado -->
+            <button onclick="navigate('simulator')" class="mobile-nav-btn relative w-full flex flex-col items-center justify-center group" data-target="simulator">
+                <div class="absolute -top-6 w-14 h-14 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg border-4 border-[#F8FAFC] group-hover:bg-blue-600 transition-colors simulator-icon-bg">
+                    <i class="fas fa-exchange-alt text-xl"></i>
+                </div>
+                <span class="text-[10px] font-semibold text-gray-500 mt-6 group-hover:text-blue-600 transition-colors simulator-text">Simulador</span>
+            </button>
+
+            <button onclick="navigate('resources')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="resources">
+                <i class="fas fa-photo-video text-xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Recursos</span>
+            </button>
+            <button onclick="navigate('messages')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors relative" data-target="messages">
+                <div class="relative">
+                    <i class="fas fa-comment-dots text-xl mb-1"></i>
+                    <span class="absolute -top-1 -right-2 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
+                </div>
+                <span class="text-[10px] font-semibold">Mensajes</span>
+            </button>
+        </div>
+    </div>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" id="app-content">
+        <!-- Content gets injected here via JS -->
+    </main>
+
+    <!-- Modal: Termómetro Semanal -->
+    <div id="thermometer-modal" class="fixed inset-0 glass-modal z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl mx-4 overflow-hidden transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeThermometer()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="thermo-content" class="p-8 sm:p-10 relative">
+                <!-- Inyectado vía JS para reiniciar estado -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Lector de Artículos -->
+    <div id="article-modal" class="fixed inset-0 glass-modal z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full sm:max-w-2xl sm:rounded-3xl rounded-t-3xl h-[85vh] sm:h-[80vh] flex flex-col shadow-2xl mx-0 sm:mx-4 transform translate-y-full sm:translate-y-8 transition-transform duration-300" id="article-container">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-white/95 backdrop-blur sticky top-0 z-10 sm:rounded-t-3xl rounded-t-3xl">
+                <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2"><i class="fas fa-book-open text-upaep-red"></i> Lectura</h3>
+                <button onclick="closeArticle()" class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 sm:p-10 overflow-y-auto hide-scroll flex-grow" id="article-body">
+                <!-- Contenido del artículo -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Simulador de Video Cine -->
+    <div id="video-modal" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <button onclick="closeVideo()" class="absolute top-6 right-6 sm:top-10 sm:right-10 w-12 h-12 flex items-center justify-center bg-white/10 text-white hover:bg-white/20 rounded-full transition text-xl">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="w-full max-w-5xl aspect-video bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+                <div class="text-white">
+                    <span class="bg-upaep-red text-xs font-bold px-3 py-1 rounded-md uppercase tracking-wide mb-3 inline-block">Reproduciendo</span>
+                    <h2 id="video-title" class="text-2xl sm:text-4xl font-bold">Título del Video</h2>
+                </div>
+            </div>
+            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform">
+                <i class="fas fa-play text-white text-3xl ml-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor Toasts -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS SIMULADA
+        // ==========================================
+        const careersDB = {
+            'industrial': {
+                name: 'Ingeniería Industrial',
+                bg: 'bg-orange-100', color: 'text-orange-600', icon: 'fa-cogs',
+                profile: 'Profesional enfocado en optimizar procesos, administrar recursos y dirigir plantas de manufactura o sistemas logísticos.',
+                subjects: ['Cálculo', 'Física', 'Logística', 'Procesos de Manufactura', 'Investigación de Operaciones', 'Economía', 'Dibujo Industrial']
+            },
+            'administracion': {
+                name: 'Administración de Empresas',
+                bg: 'bg-blue-100', color: 'text-blue-600', icon: 'fa-briefcase',
+                profile: 'Líder estratégico capaz de gestionar el capital humano, dirigir proyectos, emprender negocios y entender finanzas.',
+                subjects: ['Contabilidad', 'Economía', 'Comportamiento Organizacional', 'Marketing', 'Finanzas Corporativas', 'Derecho Laboral', 'Planeación Estratégica']
+            },
+            'arquitectura': {
+                name: 'Arquitectura',
+                bg: 'bg-indigo-100', color: 'text-indigo-600', icon: 'fa-drafting-compass',
+                profile: 'Creador de espacios funcionales y estéticos, experto en diseño urbano, sostenibilidad y expresión gráfica.',
+                subjects: ['Diseño Arquitectónico', 'Estructuras', 'Historia del Arte', 'Dibujo', 'Materiales de Construcción', 'Instalaciones', 'Urbanismo']
+            },
+            'psicologia': {
+                name: 'Psicología',
+                bg: 'bg-green-100', color: 'text-green-600', icon: 'fa-brain',
+                profile: 'Especialista en el comportamiento humano, preparado para brindar intervención clínica, educativa u organizacional.',
+                subjects: ['Neuroanatomía', 'Psicología del Desarrollo', 'Teorías de la Personalidad', 'Estadística', 'Entrevista Psicológica', 'Psicopatología', 'Evaluación']
+            }
+        };
+
+        const articlesDB = [
+            {
+                id: 1,
+                title: 'El mito de "perder el tiempo" al cambiar de carrera',
+                tag: 'Mitos',
+                readTime: '4 min',
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">¿Sientes que tiraste años a la basura?</h2><p class="text-gray-700 leading-relaxed mb-4">Es una de las preocupaciones más comunes entre los universitarios. Pensar que si te cambias de carrera en el cuarto semestre has "perdido" dos años de tu vida.</p><p class="text-gray-700 leading-relaxed mb-4">La realidad es que el conocimiento es acumulativo. Las habilidades que aprendiste (organización, análisis, trabajo bajo presión) te acompañarán. Además, el tronco común suele salvar muchos de tus créditos.</p><p class="text-gray-700 leading-relaxed"><strong>Recuerda:</strong> Es mejor perder unos semestres, que pasar 40 años ejerciendo una profesión que te hace infeliz.</p>'
+            },
+            {
+                id: 2,
+                title: '¿Cómo hablar con mis papás sobre mi cambio de carrera?',
+                tag: 'Familia',
+                readTime: '6 min',
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El momento temido</h2><p class="text-gray-700 leading-relaxed mb-4">Abordar el tema con la familia puede generar muchísima ansiedad, especialmente si ellos están financiando tus estudios o si provienes de una "familia de abogados" o médicos.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Pasos para la conversación:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Prepárate con datos:</strong> No llegues solo con un "ya no me gusta". Presenta un plan: "Investigué esta otra carrera, puedo revalidar estas materias, el campo laboral es este".</li><li><strong>Elige el momento adecuado:</strong> Evita sacar el tema durante una discusión o cuando estén estresados.</li><li><strong>Asume su reacción:</strong> Es normal que al principio sientan miedo o decepción. Dales tiempo para procesarlo.</li><li><strong>Busca aliados:</strong> Si tienes un orientador psicopedagógico (como los de UPAEP), puedes pedirles que medien en una cita con tus padres.</li></ul>'
+            },
+            {
+                id: 3,
+                title: 'Señales de que estás en la carrera indicada',
+                tag: 'Vocación',
+                readTime: '5 min',
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">¿Cómo saber si tomaste la decisión correcta?</h2><p class="text-gray-700 leading-relaxed mb-4">Es completamente normal tener dudas durante la carrera universitaria, pero existen pequeños indicadores que confirman que estás en el camino correcto para tu futuro.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Señales clave a tomar en cuenta:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Curiosidad genuina:</strong> Te descubres investigando temas de la clase más allá de lo que pide el temario.</li><li><strong>Fluidez en los retos:</strong> Las tareas pesadas o los proyectos largos no se sienten como un castigo insoportable, sino como un reto a superar.</li><li><strong>Proyección futura:</strong> Te emociona imaginarte trabajando en la industria o ejerciendo la profesión en la vida real.</li><li><strong>Identidad:</strong> Te identificas con los valores y la visión del mundo de tus profesores y compañeros apasionados por el tema.</li></ul>'
+            },
+            {
+                id: 4,
+                title: 'Ansiedad por las calificaciones: Cuando un número dicta tu valor',
+                tag: 'Salud Mental',
+                readTime: '5 min',
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">Más que un promedio</h2><p class="text-gray-700 leading-relaxed mb-4">En el entorno universitario competitivo, es fácil caer en la trampa de medir nuestro valor personal a través del Kardex. Una mala nota puede sentirse como un fracaso total.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Estrategias para desapegarte de la nota:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Reconoce el esfuerzo, no solo el resultado:</strong> Celebra las horas de estudio y la disciplina, independientemente de lo que diga el examen.</li><li><strong>Identifica tus otras fortalezas:</strong> El liderazgo, la empatía y la creatividad raramente se reflejan en un examen de opción múltiple.</li><li><strong>Busca ayuda oportuna:</strong> Si la ansiedad te paraliza, los asesores psicopedagógicos están para darte herramientas de manejo de estrés.</li></ul>'
+            },
+            {
+                id: 5,
+                title: 'Síndrome del impostor: ¿Por qué siento que no pertenezco aquí?',
+                tag: 'Psicología',
+                readTime: '7 min',
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El miedo a ser "descubierto"</h2><p class="text-gray-700 leading-relaxed mb-4">Llegas a clase, ves a tus compañeros participando fluidamente y piensas: "Todos aquí son más inteligentes que yo, en cualquier momento se darán cuenta de que fue un error admitirme". Esto es el Síndrome del Impostor.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">¿Cómo combatirlo?</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Habla del tema:</strong> Te sorprendería saber cuántos de tus compañeros (¡y profesores!) sienten exactamente lo mismo.</li><li><strong>Documenta tus logros:</strong> Guarda correos de felicitación, buenas notas y proyectos de los que te sientas orgulloso. Léelos cuando dudes de ti.</li><li><strong>Acepta que estás aprendiendo:</strong> Estás en la universidad para aprender, no para saberlo todo desde el primer semestre. El error es parte del método.</li></ul>'
+            },
+            {
+                id: 6,
+                title: '¿Estrés o Falta de Vocación?',
+                tag: 'Vocación',
+                readTime: '3 min',
+                content: `
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-brain text-3xl text-orange-500"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Diferenciando el cansancio del desinterés</h2>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-3xl mx-auto">La transición del ciclo diversificado (preparatoria) a la educación superior genera un fuerte impacto psicológico natural. Es completamente normal sentirse abrumado o cuestionarse las decisiones durante los primeros semestres. Pero, ¿cómo saber si es solo carga de trabajo o incongruencia vocacional?</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-battery-half text-yellow-500"></i> Señales de Estrés Adaptativo
+                            </h3>
+                            <ul class="space-y-4 text-gray-700 text-sm">
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span>Te preocupan mucho las fechas de exámenes y entregas.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span>Sientes que el tiempo libre ha desaparecido de tu rutina.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span><strong>Clave:</strong> Cuando finalmente entiendes el tema o terminas el proyecto, sientes satisfacción y el tema central de la carrera te sigue pareciendo fascinante.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-red-50/50 rounded-2xl p-6 border border-red-100">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-directions text-red-500"></i> Señales de Incongruencia Vocacional
+                            </h3>
+                            <ul class="space-y-4 text-gray-700 text-sm">
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span>Te aburre profundamente la materia principal, incluso si es fácil de aprobar.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span>No logras visualizarte trabajando felizmente en ese sector a futuro.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                    <span><strong>Clave:</strong> Sientes un alivio intenso y desproporcionado cuando se cancela una clase nuclear de tu carrera.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                        <p class="text-gray-700 leading-relaxed mb-4">Si te identificas claramente con el segundo grupo (Incongruencia), te recomendamos encarecidamente utilizar nuestra herramienta de <strong>Test Vocacional Express</strong> en tu perfil para comenzar a mapear alternativas.</p>
+                        <button onclick="closeArticle(); navigate('vocational'); startVocationalTest()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-upaep-red transition-colors text-sm shadow-md">
+                            Ir al Test Vocacional
+                        </button>
+                    </div>
+                `
+            }
+        ];
+
+        // ==========================================
+        // VISTAS SPA (Single Page Application)
+        // ==========================================
+        const views = {
+            // INICIO
+            home: `
+                <div class="slide-up">
+                    <header class="mb-12">
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Hola, <span class="text-upaep-red">Estudiante</span> 👋</h1>
+                        <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">Bienvenido a tu espacio seguro en UPAEP. Aquí puedes explorar tu verdadera vocación, resolver dudas académicas y encontrar apoyo en tu camino universitario.</p>
+                    </header>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                        <!-- Termómetro Emocional -->
+                        <div class="lg:col-span-2 bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-8 group">
+                            <div class="relative shrink-0">
+                                <div class="w-32 h-32 rounded-full border-[6px] border-gray-50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-upaep-red/20 to-transparent"></div>
+                                    <i class="fas fa-heartbeat text-5xl text-upaep-red relative z-10 pulse-soft"></i>
+                                </div>
+                            </div>
+                            <div class="text-center sm:text-left flex-grow">
+                                <span class="bg-red-50 text-upaep-red text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Ritual Semanal</span>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-3">Tu check-in semanal</h3>
+                                <p class="text-gray-500 mb-6 leading-relaxed">Tómate 2 minutos para reflexionar sobre tu semana. Identificar cómo te sientes es el primer paso para mejorar tu experiencia universitaria.</p>
+                                <button onclick="openThermometer()" class="bg-gray-900 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-upaep-red transition-colors shadow-lg shadow-gray-900/20 inline-flex items-center gap-3">
+                                    Comenzar evaluación <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Banner Promocional Test Vocacional -->
+                        <div onclick="navigate('vocational'); startVocationalTest()" class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl shadow-sm border border-purple-100 p-8 cursor-pointer hover:shadow-lg hover:border-purple-300 transition group flex flex-col justify-center items-center text-center">
+                            <div class="w-20 h-20 rounded-2xl bg-white text-purple-600 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-sm">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                            <h4 class="font-bold text-xl text-purple-900 mb-3">¿Dudas de tu carrera?</h4>
+                            <p class="text-sm text-purple-800/80 leading-relaxed mb-6">Realiza nuestro Test Vocacional Exploratorio y descubre qué áreas se adaptan mejor a ti.</p>
+                            <span class="text-purple-600 font-bold text-sm group-hover:underline">Comenzar Test &rarr;</span>
+                        </div>
+                    </div>
+
+                    <!-- Recomendaciones -->
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900">Para ti hoy</h2>
+                            <button onclick="navigate('resources')" class="text-upaep-red font-semibold hover:underline text-sm">Ver todo</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Artículo Destacado -->
+                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group">
+                                <div class="flex items-center gap-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                                    <i class="fas fa-file-alt text-upaep-red"></i> Lectura · 4 min
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-upaep-red transition-colors">El mito de "perder el tiempo" al cambiar de carrera</h4>
+                                <p class="text-gray-500 line-clamp-2 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu futuro profesional y salud mental.</p>
+                            </div>
+                            
+                            <!-- Video Destacado -->
+                            <div onclick="openVideo('Un Día en: Ingeniería Industrial')" class="bg-gray-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer transition group relative h-[200px]">
+                                <img src="https://placehold.co/600x300/1A1A1A/666666?text=Video" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity" alt="Video">
+                                <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                    <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-play text-white ml-1"></i>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-white mb-1">Un Día en: Ingeniería Industrial</h4>
+                                    <p class="text-gray-300 text-sm">Conoce la realidad de la carrera.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            
+            // MENTORES
+            mentors: `
+                <div class="slide-up">
+                    <div class="mb-12">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-users text-upaep-red mr-3"></i>Águilas Guía</h2>
+                        <p class="text-gray-500 max-w-2xl text-lg leading-relaxed">Conecta con estudiantes de semestres avanzados que ya pasaron por lo mismo que tú. Ellos están listos para escucharte, orientarte y compartir su experiencia.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Mentor 1 -->
+                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                            <img src="https://placehold.co/120x120/bfdbfe/2563eb?text=M" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <h3 class="font-bold text-xl text-gray-900 mb-1">Mateo Ruiz</h3>
+                            <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Ingeniería Industrial (7mo)</span>
+                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Me cambié de Mecatrónica a Industrial en 3er semestre. Conozco el proceso de revalidación a fondo, ¡escríbeme!"</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-comment-dots"></i> Enviar Mensaje
+                            </button>
+                        </div>
+                        
+                        <!-- Mentor 2 -->
+                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-400 to-pink-600"></div>
+                            <img src="https://placehold.co/120x120/fbcfe8/db2777?text=S" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <h3 class="font-bold text-xl text-gray-900 mb-1">Sofía Mendieta</h3>
+                            <span class="bg-pink-50 text-pink-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Psicología (8vo)</span>
+                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Si sientes mucha ansiedad académica o presión familiar por tus estudios, me encantaría escucharte."</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-comment-dots"></i> Enviar Mensaje
+                            </button>
+                        </div>
+
+                            <!-- Mentor 3 -->
+                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
+                            <img src="https://placehold.co/120x120/c7d2fe/4f46e5?text=D" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <h3 class="font-bold text-xl text-gray-900 mb-1">Diego Torres</h3>
+                            <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Arquitectura (6to)</span>
+                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Te ayudo a organizar tus tiempos y a saber cómo lidiar con las semanas de entregas pesadas."</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-comment-dots"></i> Enviar Mensaje
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            // RECURSOS (Hub Multimedia)
+            resources: `
+                <div class="slide-up">
+                    <div class="mb-12">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-photo-video text-upaep-red mr-3"></i>Hub de Contención y Exploración</h2>
+                        <p class="text-gray-500 max-w-3xl text-lg leading-relaxed">Descubre cápsulas visuales, podcasts y artículos diseñados para ayudarte a manejar la presión y explorar tu vocación.</p>
+                    </div>
+
+                    <!-- Cápsulas en Video -->
+                    <div class="mb-16">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                            <i class="fas fa-play-circle text-gray-400"></i> Cápsulas: Un Día en la Vida
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div onclick="openVideo('Un Día en Arquitectura')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
+                                <div class="relative h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Arquitectura" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-play text-white ml-1 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">05:24</span>
+                                </div>
+                                <div class="p-6 flex flex-col flex-grow">
+                                    <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">La realidad de estudiar Arquitectura</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Acompaña a Diego en semana de maquetas y descubre si el diseño de espacios es para ti.</p>
+                                </div>
+                            </div>
+                            
+                            <div onclick="openVideo('Un Día en Psicología')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
+                                <div class="relative h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Psicologia" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-play text-white ml-1 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">07:15</span>
+                                </div>
+                                <div class="p-6 flex flex-col flex-grow">
+                                    <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Intervención y comportamiento</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Conoce cómo se ven las prácticas clínicas y qué se siente estar del otro lado de la escucha.</p>
+                                </div>
+                            </div>
+
+                            <div onclick="openVideo('Un Día en Ing. Industrial')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
+                                <div class="relative h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Industrial" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-play text-white ml-1 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">06:40</span>
+                                </div>
+                                <div class="p-6 flex flex-col flex-grow">
+                                    <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Plantas, procesos y manufactura</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Un recorrido por laboratorios para entender de qué se trata la optimización industrial.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Podcasts de Afrontamiento -->
+                    <div class="mb-16 bg-gray-900 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                        <h3 class="text-2xl font-bold text-white mb-8 relative z-10 flex items-center gap-3">
+                            <i class="fas fa-podcast text-upaep-red"></i> Podcasts de Afrontamiento
+                        </h3>
+                        
+                        <div class="space-y-4 relative z-10">
+                            <!-- Track 1 -->
+                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: Manejando la ansiedad académica...')">
+                                <div class="w-12 h-12 rounded-full bg-upaep-red text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-play ml-1"></i>
+                                </div>
+                                <div class="flex-grow text-center sm:text-left">
+                                    <h4 class="text-white font-bold text-lg">Manejando la ansiedad en semanas de exámenes</h4>
+                                    <p class="text-gray-400 text-sm">Con la Dra. Elena Ríos · Psicopedagogía UPAEP</p>
+                                </div>
+                                <div class="text-gray-500 hidden sm:flex items-center gap-1 opacity-60">
+                                    <div class="w-1 h-3 bg-gray-400 rounded-full animate-bounce"></div>
+                                    <div class="w-1 h-5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-1 h-4 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                    <div class="w-1 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+                                </div>
+                                <span class="text-gray-400 text-sm font-medium">12:45</span>
+                            </div>
+
+                            <!-- Track 2 -->
+                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: El peso de las expectativas...')">
+                                <div class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform group-hover:bg-upaep-red">
+                                    <i class="fas fa-play ml-1"></i>
+                                </div>
+                                <div class="flex-grow text-center sm:text-left">
+                                    <h4 class="text-white font-bold text-lg">El peso de las expectativas familiares</h4>
+                                    <p class="text-gray-400 text-sm">Episodio 2 · Charla con estudiantes</p>
+                                </div>
+                                <span class="text-gray-400 text-sm font-medium">15:20</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lecturas -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                            <i class="fas fa-book text-gray-400"></i> Lecturas Recomendadas
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                             <div onclick="openArticle(6)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">¿Estrés o Falta de Vocación?</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">Aprende a diferenciar el cansancio normal por la carga de trabajo de una verdadera incongruencia vocacional.</p>
+                                </div>
+                            </div>
+                            
+                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">El mito de "perder el tiempo" al cambiar de carrera</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu salud mental.</p>
+                                </div>
+                            </div>
+
+                            <div onclick="openArticle(2)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">¿Cómo hablar con mis papás?</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">Pasos y consejos prácticos para comunicarles que deseas cambiar de carrera escolar.</p>
+                                </div>
+                            </div>
+
+                            <div onclick="openArticle(3)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Señales de que estás en la carrera indicada</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">Identifica los detalles que confirman que tomaste la decisión académica correcta.</p>
+                                </div>
+                            </div>
+
+                            <div onclick="openArticle(4)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-heart-broken"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Ansiedad por las calificaciones</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">Estrategias para desapegarte de la nota y cuidar de tu salud mental en época de exámenes.</p>
+                                </div>
+                            </div>
+
+                            <div onclick="openArticle(5)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-user-secret"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Síndrome del impostor</h4>
+                                    <p class="text-sm text-gray-500 leading-relaxed">¿Sientes que no perteneces aquí? Descubre cómo combatir el miedo a ser "descubierto".</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            // SIMULADOR
+            simulator: `
+                <div class="slide-up">
+                    <div class="mb-12">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-balance-scale text-upaep-red mr-3"></i>Simulador de Cambio de Carrera</h2>
+                        <p class="text-gray-500 max-w-3xl text-lg leading-relaxed">Compara tu carrera actual con la que te interesa. Descubre qué materias podrías revalidar (tronco común) y cómo se transformaría tu perfil profesional.</p>
+                    </div>
+
+                    <!-- Banner Test Vocacional en Simulador -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-3xl p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                        <div class="flex items-center gap-5">
+                            <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl shrink-0"><i class="fas fa-map-signs"></i></div>
+                            <div>
+                                <h4 class="font-bold text-blue-900 text-xl mb-1">¿No sabes qué carrera comparar?</h4>
+                                <p class="text-blue-800/80">Descubre tus verdaderos intereses con nuestra herramienta exploratoria.</p>
+                            </div>
+                        </div>
+                        <button onclick="navigate('vocational'); startVocationalTest()" class="w-full md:w-auto bg-blue-600 text-white font-bold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition shadow-md whitespace-nowrap shrink-0">
+                            Hacer Test Vocacional
+                        </button>
+                    </div>
+
+                    <!-- Controles del Simulador -->
+                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 mb-12 flex flex-col lg:flex-row gap-8 items-center justify-between relative overflow-hidden">
+                        
+                        <div class="w-full lg:w-2/5">
+                            <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Estudio actualmente:</label>
+                            <select id="sim-source" class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl px-5 py-4 font-semibold focus:outline-none focus:border-upaep-red focus:ring-2 focus:ring-red-100 transition-all appearance-none cursor-pointer">
+                                <option value="industrial">Ingeniería Industrial</option>
+                                <option value="administracion">Administración de Empresas</option>
+                                <option value="arquitectura">Arquitectura</option>
+                                <option value="psicologia">Psicología</option>
+                            </select>
+                        </div>
+
+                        <div class="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0 border border-gray-200 shadow-inner rotate-90 lg:rotate-0">
+                            <i class="fas fa-exchange-alt text-xl"></i>
+                        </div>
+
+                        <div class="w-full lg:w-2/5">
+                            <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Me interesa cambiar a:</label>
+                            <select id="sim-target" class="w-full bg-white border-2 border-upaep-red text-upaep-red rounded-xl px-5 py-4 font-bold focus:outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none cursor-pointer shadow-sm">
+                                <option value="administracion">Administración de Empresas</option>
+                                <option value="industrial">Ingeniería Industrial</option>
+                                <option value="arquitectura">Arquitectura</option>
+                                <option value="psicologia">Psicología</option>
+                            </select>
+                        </div>
+
+                        <div class="w-full lg:w-auto self-end lg:self-center mt-4 lg:mt-0">
+                            <button onclick="runSimulation()" class="w-full lg:w-auto bg-gray-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-upaep-red transition-all shadow-lg hover:-translate-y-1 transform">
+                                Comparar <i class="fas fa-play ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resultados del Simulador (Inyectados por JS) -->
+                    <div id="sim-results" class="hidden opacity-0 transition-all duration-500 transform translate-y-4"></div>
+                </div>
+            `,
+
+            // TEST VOCACIONAL
+            vocational: `
+                <div class="slide-up max-w-4xl mx-auto">
+                    <div class="mb-12 text-center">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-compass text-upaep-red mr-3"></i>Test Vocacional Exploratorio</h2>
+                        <p class="text-gray-500 text-lg leading-relaxed max-w-2xl mx-auto">Descubre qué áreas se alinean mejor con tus intereses y habilidades. Recuerda responder con total honestidad.</p>
+                    </div>
+
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative mb-12">
+                        <!-- Advertencia Especialista -->
+                        <div class="bg-yellow-50 border-b border-yellow-200 p-6 flex items-start gap-4">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-2xl mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-yellow-800 text-lg mb-1">Aviso Importante</h4>
+                                <p class="text-yellow-700 leading-relaxed">Este test es una herramienta de exploración inicial. <strong>Si estás considerando seriamente cambiar de carrera, agenda una cita con Psicopedagogía</strong> para una evaluación profesional.</p>
+                            </div>
+                        </div>
+
+                        <!-- Contenedor dinámico del test -->
+                        <div class="p-8 sm:p-12" id="vocational-content">
+                            <!-- Inyectado vía JS -->
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            // MENSAJES (Chat)
+            messages: `
+                <div class="slide-up max-w-5xl mx-auto h-[calc(100vh-14rem)] md:h-[75vh] flex bg-white rounded-3xl md:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                    <!-- Sidebar de Contactos -->
+                    <div class="w-1/3 border-r border-gray-100 bg-gray-50/50 flex flex-col hidden md:flex">
+                        <div class="p-6 border-b border-gray-100">
+                            <h3 class="font-bold text-gray-900 text-xl">Mensajes</h3>
+                        </div>
+                        <div class="overflow-y-auto flex-grow p-4 space-y-2">
+                            <!-- Chat Activo -->
+                            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm cursor-pointer flex items-center gap-4">
+                                <div class="relative">
+                                    <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full object-cover">
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-grow overflow-hidden">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <h4 class="font-bold text-gray-900 truncate">Diego Torres</h4>
+                                        <span class="text-xs text-gray-400">10:42 AM</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 truncate">¡Claro! Cuéntame, ¿qué se te complica?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Área de Chat -->
+                    <div class="w-full md:w-2/3 flex flex-col bg-white">
+                        <!-- Cabecera Chat -->
+                        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-bold text-gray-900 text-lg">Diego Torres</h3>
+                                    <p class="text-xs text-upaep-red font-semibold">Mentor Arquitectura</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+
+                        <!-- Historial de Mensajes -->
+                        <div class="flex-grow p-6 overflow-y-auto bg-gray-50/30 flex flex-col gap-4" id="chat-history">
+                            <!-- Mensajes Iniciales Simulados -->
+                            <div class="flex flex-col items-center mb-4">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-100 px-3 py-1 rounded-full">Hoy</span>
+                            </div>
+
+                            <div class="flex items-end justify-end gap-2">
+                                <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
+                                    <p class="text-sm">Hola Diego, vi tu perfil en la Brújula. Estoy en 2do semestre de Industrial pero me llama muchísimo la atención Arqui, solo que me da miedo no dar el ancho con las maquetas.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-end gap-2">
+                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
+                                <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
+                                    <p class="text-sm">¡Hola! Qué gusto saludarte. Entiendo perfecto ese miedo, yo pasé por lo mismo. Al principio las maquetas asustan, pero te enseñan la técnica desde cero.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-end gap-2">
+                                <div class="w-8 h-8 rounded-full bg-transparent"></div>
+                                <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
+                                    <p class="text-sm">¿Te parece si nos tomamos un café en el Ágora y te cuento cómo es el ritmo de trabajo? ¡Sin compromiso!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input -->
+                        <div class="p-5 border-t border-gray-100 bg-white">
+                            <form onsubmit="sendChatMessage(event)" class="flex gap-3">
+                                <input type="text" id="chat-input" placeholder="Escribe un mensaje a Diego..." class="flex-grow bg-gray-100 border-none rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-upaep-red/50 text-sm">
+                                <button type="submit" class="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-upaep-red transition-colors shrink-0 shadow-md">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            // PERFIL
+            profile: `
+                <div class="slide-up max-w-3xl mx-auto">
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                        <!-- Cabecera -->
+                        <div class="h-32 bg-gradient-to-r from-gray-800 to-gray-900 relative"></div>
+                        
+                        <div class="px-8 sm:px-12 pb-12 relative">
+                            <!-- Avatar Flotante -->
+                            <div class="w-28 h-28 bg-white rounded-full p-2 absolute -top-14 border-4 border-white shadow-lg">
+                                <img src="https://placehold.co/200x200/334155/ffffff?text=JC" class="w-full h-full rounded-full object-cover">
+                            </div>
+                            
+                            <div class="pt-20 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+                                <div>
+                                    <h2 class="text-3xl font-bold text-gray-900">Juan Carlos Gonzalez</h2>
+                                    <p class="text-upaep-red font-semibold">Comunicación y Medios Digitales · 8vo Semestre</p>
+                                </div>
+                                <button class="bg-gray-100 text-gray-700 font-bold py-2.5 px-6 rounded-xl hover:bg-gray-200 transition-colors shadow-sm text-sm">
+                                    Editar Perfil
+                                </button>
+                            </div>
+
+                            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Check-ins Completados</h4>
+                                    <p class="text-3xl font-black text-gray-900">4 <span class="text-sm font-medium text-gray-500">este mes</span></p>
+                                </div>
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Citas Psicopedagogía</h4>
+                                    <p class="text-3xl font-black text-gray-900">0</p>
+                                    <button onclick="showToast('Agendando...')" class="mt-2 text-upaep-red text-sm font-bold hover:underline">Agendar Primera Cita</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // ==========================================
+        // LÓGICA DEL TERMÓMETRO (CHECK-IN) 5 PREGUNTAS
+        // ==========================================
+        const thermoQuestions = [
+            {
+                question: "¿Cómo te sentiste en clases esta semana?",
+                options: [
+                    { text: "Motivado y con energía", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
+                    { text: "Un poco cansado pero bien", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
+                    { text: "Aburrido y sin ganas", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
+                    { text: "Muy abrumado/estresado", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                ]
+            },
+            {
+                question: "Al pensar en el futuro de tu carrera, sientes:",
+                options: [
+                    { text: "Emoción y claridad", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
+                    { text: "Cierta incertidumbre normal", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
+                    { text: "Dudas de si es lo correcto", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
+                    { text: "Angustia y arrepentimiento", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                ]
+            },
+            {
+                question: "¿Cómo calificarías tu calidad de sueño estos días?",
+                options: [
+                    { text: "Duermo bien (7-8 hrs)", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
+                    { text: "Duermo poco por estudio", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
+                    { text: "Insomnio por estrés", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                ]
+            },
+            {
+                question: "¿Qué tan conectado te sientes con tus compañeros de clase?",
+                options: [
+                    { text: "Tengo un buen grupo de apoyo", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
+                    { text: "Hablo con algunos, todo casual", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
+                    { text: "Me siento aislado o fuera de lugar", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 1 }
+                ]
+            },
+            {
+                question: "En general, ¿qué tanta presión familiar sientes respecto a tus estudios?",
+                options: [
+                    { text: "Me apoyan sin presionar", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
+                    { text: "Presión normal por mis notas", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
+                    { text: "Mucha presión por expectativas", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                ]
+            }
+        ];
+
+        let currentThermoQuestion = 0;
+        let totalThermoRisk = 0;
+
+        function openThermometer() {
+            const modal = document.getElementById('thermometer-modal');
+            modal.classList.remove('hidden');
+            // Trigger reflow
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+            
+            // Reiniciar estado
+            currentThermoQuestion = 0;
+            totalThermoRisk = 0;
+            renderThermoQuestion();
+        }
+
+        function closeThermometer() {
+            const modal = document.getElementById('thermometer-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function renderThermoQuestion() {
+            const contentDiv = document.getElementById('thermo-content');
+            
+            if (currentThermoQuestion >= thermoQuestions.length) {
+                evaluateThermoRisk();
+                return;
+            }
+
+            const q = thermoQuestions[currentThermoQuestion];
+            const progress = ((currentThermoQuestion) / thermoQuestions.length) * 100;
+
+            let html = `
+                <div class="mb-8">
+                    <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
+                        <span>Check-in Semanal</span>
+                        <span>${currentThermoQuestion + 1} / ${thermoQuestions.length}</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                        <div class="bg-upaep-red h-full transition-all duration-500 ease-out" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center leading-tight">${q.question}</h3>
+                    <div class="flex flex-col gap-4">
+            `;
+
+            q.options.forEach(opt => {
+                html += `
+                    <button onclick="selectThermoOption(${opt.risk})" class="${opt.color} font-bold py-4 px-6 rounded-2xl transition-all duration-200 text-left border-2 border-transparent hover:border-current transform hover:-translate-y-1">
+                        ${opt.text}
+                    </button>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+        }
+
+        function selectThermoOption(riskValue) {
+            totalThermoRisk += riskValue;
+            currentThermoQuestion++;
+            renderThermoQuestion();
+        }
+
+        function evaluateThermoRisk() {
+            const contentDiv = document.getElementById('thermo-content');
+            let html = '';
+
+            // Umbral de riesgo: si es mayor a 4, requiere atención
+            if (totalThermoRisk > 4) {
+                html = `
+                    <div class="text-center fade-in">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                            <i class="fas fa-hands-helping text-4xl text-yellow-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Notamos que ha sido una semana difícil</h3>
+                        <p class="text-gray-500 mb-8 leading-relaxed">Detectamos niveles de estrés o dudas sobre tu carrera. No tienes que cargar con esto solo. Aquí tienes algunas opciones para apoyarte ahora mismo:</p>
+                        
+                        <div class="flex flex-col gap-3">
+                            <button onclick="closeThermometer(); navigate('vocational'); startVocationalTest()" class="w-full bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3">
+                                <i class="fas fa-compass text-lg"></i> Realizar Test Vocacional
+                            </button>
+                            <button onclick="closeThermometer(); navigate('mentors')" class="w-full bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3">
+                                <i class="fas fa-users text-lg"></i> Hablar con un Mentor (Águila Guía)
+                            </button>
+                            <button onclick="closeThermometer(); showToast('Redirigiendo a citas psicopedagógicas...')" class="w-full bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3 mt-2">
+                                <i class="fas fa-calendar-check text-lg"></i> Agendar Cita Psicopedagógica
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="text-center fade-in">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                            <i class="fas fa-check text-4xl text-green-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">¡Registro Completado!</h3>
+                        <p class="text-gray-500 mb-8 leading-relaxed">Qué bueno saber que llevas una buena semana. Recuerda que mantener el equilibrio es clave para tu éxito universitario.</p>
+                        <button onclick="closeThermometer()" class="w-full bg-gray-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg">
+                            Cerrar y continuar
+                        </button>
+                    </div>
+                `;
+            }
+            contentDiv.innerHTML = html;
+        }
+
+        // ==========================================
+        // LÓGICA DE TEST VOCACIONAL
+        // ==========================================
+        const vocationalQuestions = [
+            {
+                text: "¿Qué actividad disfrutas más resolver o hacer en tu tiempo libre?",
+                options: [
+                    { text: "Armar cosas, entender cómo funcionan o resolver acertijos lógicos", category: "industrial" },
+                    { text: "Organizar planes con amigos, liderar grupos o administrar finanzas", category: "administracion" },
+                    { text: "Dibujar, decorar mi espacio o apreciar el diseño y la estética", category: "arquitectura" },
+                    { text: "Escuchar a los demás, dar consejos y analizar comportamientos", category: "psicologia" }
+                ]
+            },
+            {
+                text: "Si te asignan un proyecto en equipo, ¿qué rol prefieres tomar?",
+                options: [
+                    { text: "Elaborar los cálculos, optimizar los tiempos y estructurar el proceso", category: "industrial" },
+                    { text: "Coordinar al equipo, delegar tareas y asegurar que se cumplan las metas", category: "administracion" },
+                    { text: "Hacer los bocetos, diseñar la presentación visual y el estilo", category: "arquitectura" },
+                    { text: "Mediar si hay conflictos y asegurar que el equipo trabaje en armonía", category: "psicologia" }
+                ]
+            },
+            {
+                text: "¿Qué tipo de temas o documentales te llaman más la atención?",
+                options: [
+                    { text: "Avances tecnológicos, robótica, manufactura o ciencias exactas", category: "industrial" },
+                    { text: "Casos de éxito de empresas, emprendimiento o economía global", category: "administracion" },
+                    { text: "Historia del arte, grandes construcciones o diseño de interiores", category: "arquitectura" },
+                    { text: "Comportamiento humano, salud mental, sociología o neurociencia", category: "psicologia" }
+                ]
+            },
+            {
+                text: "Imagina tu espacio de trabajo ideal en el futuro, ¿cómo sería?",
+                options: [
+                    { text: "Una planta de producción, laboratorio o centro tecnológico", category: "industrial" },
+                    { text: "Una oficina corporativa, sala de juntas o dirigiendo mi negocio", category: "administracion" },
+                    { text: "Un estudio creativo, un despacho de diseño o supervisando una obra", category: "arquitectura" },
+                    { text: "Un consultorio privado, una clínica o el área de talento humano", category: "psicologia" }
+                ]
+            },
+            {
+                text: "¿Qué impacto principal te gustaría lograr a través de tu profesión?",
+                options: [
+                    { text: "Mejorar la eficiencia de los procesos y crear soluciones tecnológicas", category: "industrial" },
+                    { text: "Generar empleo, liderar el mercado y crear marcas innovadoras", category: "administracion" },
+                    { text: "Mejorar las ciudades creando espacios hermosos y sostenibles", category: "arquitectura" },
+                    { text: "Ayudar a las personas a sanar, crecer y mejorar su calidad de vida", category: "psicologia" }
+                ]
+            }
+        ];
+
+        let currentVocationalIndex = 0;
+        let vocationalScores = { industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
+
+        function startVocationalTest() {
+            currentVocationalIndex = 0;
+            vocationalScores = { industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
+            
+            // Allow DOM to update if called right after navigation
+            setTimeout(() => {
+                renderVocationalQuestion();
+            }, 50);
+        }
+
+        function renderVocationalQuestion() {
+            const contentDiv = document.getElementById('vocational-content');
+            if (!contentDiv) return;
+
+            if (currentVocationalIndex >= vocationalQuestions.length) {
+                showVocationalResults();
+                return;
+            }
+
+            const q = vocationalQuestions[currentVocationalIndex];
+            const progress = (currentVocationalIndex / vocationalQuestions.length) * 100;
+
+            const html = `
+                <div class="mb-10 fade-in">
+                    <div class="flex justify-between text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">
+                        <span>Progreso del test</span>
+                        <span>Pregunta ${currentVocationalIndex + 1} de ${vocationalQuestions.length}</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+                        <div class="bg-upaep-red h-full rounded-full transition-all duration-700 ease-out" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-10 text-center leading-tight fade-in" style="animation-delay: 0.1s;">${q.text}</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 fade-in" style="animation-delay: 0.2s;">
+                    ${q.options.map((opt) => `
+                        <button onclick="selectVocationalOption('${opt.category}')" class="text-left bg-white border-2 border-gray-100 hover:border-upaep-red hover:shadow-md hover:bg-red-50 text-gray-700 p-6 rounded-2xl transition-all duration-200 group flex items-start gap-4">
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-upaep-red shrink-0 flex items-center justify-center mt-0.5 transition-colors">
+                                <div class="w-2.5 h-2.5 rounded-full bg-upaep-red opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            </div>
+                            <span class="font-medium text-base leading-relaxed group-hover:text-gray-900">${opt.text}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+        }
+
+        function selectVocationalOption(category) {
+            vocationalScores[category]++;
+            currentVocationalIndex++;
+            renderVocationalQuestion();
+        }
+
+        function showVocationalResults() {
+            let highestCategory = 'industrial';
+            let maxScore = -1;
+            for (const [category, score] of Object.entries(vocationalScores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    highestCategory = category;
+                }
+            }
+
+            const career = careersDB[highestCategory];
+            const contentDiv = document.getElementById('vocational-content');
+
+            contentDiv.innerHTML = `
+                <div class="text-center slide-up">
+                    <div class="inline-flex items-center justify-center w-28 h-28 rounded-full ${career.bg} ${career.color} text-5xl mb-6 shadow-sm border-4 border-white ring-4 ring-gray-50">
+                        <i class="fas ${career.icon}"></i>
+                    </div>
+                    <h3 class="text-gray-500 font-bold uppercase tracking-widest text-xs mb-3">Tus respuestas apuntan al área de</h3>
+                    <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-8">${career.name}</h2>
+                    
+                    <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 mb-10 text-left border border-gray-100 inline-block max-w-2xl mx-auto shadow-inner">
+                        <p class="text-gray-700 text-lg leading-relaxed mb-6">${career.profile}</p>
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider"><i class="fas fa-book-open text-upaep-red mr-2"></i>Materias clave:</p>
+                            <p class="text-gray-600">${career.subjects.slice(0, 6).join(', ')}...</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
+                        <button onclick="simulateCareer('${highestCategory}')" class="flex-1 bg-gray-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg hover:-translate-y-1 transform flex items-center justify-center gap-3">
+                            <i class="fas fa-balance-scale text-lg"></i> Comparar en Simulador
+                        </button>
+                        <button onclick="showToast('Cita de orientación agendada correctamente.')" class="flex-1 bg-white border-2 border-upaep-red text-upaep-red font-bold py-4 px-6 rounded-xl hover:bg-red-50 transition shadow-sm hover:-translate-y-1 transform flex items-center justify-center gap-3">
+                            <i class="fas fa-user-md text-lg"></i> Cita Psicopedagógica
+                        </button>
+                    </div>
+                    
+                    <div class="mt-12 pt-6 border-t border-gray-100">
+                        <button onclick="startVocationalTest()" class="text-gray-400 hover:text-gray-700 font-semibold text-sm transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fas fa-redo"></i> Repetir Test Vocacional
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // LÓGICA DEL SIMULADOR
+        // ==========================================
+        
+        // Helper function for navigating and triggering the simulation from test results
+        function simulateCareer(category) {
+            navigate('simulator');
+            setTimeout(() => {
+                const targetSelect = document.getElementById('sim-target');
+                if (targetSelect) {
+                    targetSelect.value = category;
+                    runSimulation();
+                }
+            }, 100);
+        }
+
+        function runSimulation() {
+            const sourceKey = document.getElementById('sim-source').value;
+            const targetKey = document.getElementById('sim-target').value;
+            const resultsContainer = document.getElementById('sim-results');
+            
+            if (sourceKey === targetKey) {
+                showToast("Por favor selecciona una carrera destino diferente a la actual.");
+                return;
+            }
+
+            const source = careersDB[sourceKey];
+            const target = careersDB[targetKey];
+            
+            resultsContainer.classList.remove('hidden');
+            // Trigger reflow
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.remove('opacity-0', 'translate-y-4');
+
+            // Simulación de materias (lógica visual)
+            const commonSubjects = source.subjects.filter(s => target.subjects.includes(s));
+            // Agregar materias genéricas de tronco común para simulación
+            commonSubjects.push('Formación Humanista', 'Inglés', 'Habilidades Universitarias');
+            
+            const newSubjects = target.subjects.filter(s => !source.subjects.includes(s));
+
+            // Simular porcentaje de avance salvado (aleatorio realista)
+            const savedPercentage = Math.floor(Math.random() * (45 - 20 + 1) + 20);
+
+            resultsContainer.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Comparativa Perfiles -->
+                    <div class="bg-gray-900 rounded-[2.5rem] p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-upaep-red rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+                        <h3 class="text-xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-exchange-alt text-upaep-red"></i> Comparativa de Perfiles</h3>
+                        
+                        <div class="mb-8">
+                            <span class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 block">Dejas de enfocarte en:</span>
+                            <h4 class="text-lg font-bold text-gray-200 mb-2">${source.name}</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">${source.profile}</p>
+                        </div>
+                        
+                        <div class="relative pl-6 border-l-2 border-upaep-red">
+                            <span class="text-upaep-red text-xs font-bold uppercase tracking-wider mb-2 block">Para enfocarte en:</span>
+                            <h4 class="text-xl font-bold text-white mb-2">${target.name}</h4>
+                            <p class="text-sm text-gray-300 leading-relaxed">${target.profile}</p>
+                        </div>
+                    </div>
+
+                    <!-- Revalidación Estimada -->
+                    <div class="bg-white rounded-[2.5rem] p-8 sm:p-10 border border-gray-100 shadow-sm flex flex-col justify-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Simulación de Revalidación</h3>
+                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Estimación basada en el tronco común interdepartamental. Los resultados reales pueden variar.</p>
+                        
+                        <div class="mb-4 flex justify-between items-end">
+                            <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Créditos conservados</span>
+                            <span class="text-3xl font-black text-green-500">${savedPercentage}%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-4 mb-8 overflow-hidden shadow-inner">
+                            <div class="bg-green-500 h-full rounded-full progress-bar-anim" style="width: 0%;" data-target="${savedPercentage}%"></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"><i class="fas fa-check text-green-500 mr-2"></i>Materias que salvas</h4>
+                                <ul class="text-sm text-gray-600 space-y-3">
+                                    ${commonSubjects.map(s => `<li>• ${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"><i class="fas fa-star text-upaep-red mr-2"></i>Nuevas materias</h4>
+                                <ul class="text-sm text-gray-600 space-y-3">
+                                    ${newSubjects.slice(0,4).map(s => `<li>• ${s}</li>`).join('')}
+                                    <li class="text-gray-400 italic">Y otras más...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Animar la barra después de inyectar
+            setTimeout(() => {
+                const bar = resultsContainer.querySelector('.progress-bar-anim');
+                if (bar) {
+                    bar.style.transition = 'width 1.5s cubic-bezier(0.22, 1, 0.36, 1)';
+                    bar.style.width = bar.getAttribute('data-target');
+                }
+            }, 100);
+        }
+
+        // ==========================================
+        // LÓGICA DE MENSAJES (CHAT)
+        // ==========================================
+        function sendChatMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatHistory = document.getElementById('chat-history');
+            
+            // Render user message
+            chatHistory.innerHTML += `
+                <div class="flex items-end justify-end gap-2 fade-in">
+                    <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            input.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Simulate typing indicator
+            const typingId = 'typing-' + Date.now();
+            setTimeout(() => {
+                chatHistory.innerHTML += `
+                    <div id="${typingId}" class="flex items-end gap-2 fade-in">
+                        <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
+                        <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-1">
+                            <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                            <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        </div>
+                    </div>
+                `;
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // Simulate reply
+                setTimeout(() => {
+                    const typingIndicator = document.getElementById(typingId);
+                    if (typingIndicator) typingIndicator.remove();
+                    
+                    chatHistory.innerHTML += `
+                        <div class="flex items-end gap-2 fade-in">
+                            <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
+                            <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
+                                <p class="text-sm">Entiendo. Toma tu tiempo para pensarlo. Si decides explorar más a fondo Arquitectura o cualquier duda de materias, aquí estoy para apoyarte.</p>
+                            </div>
+                        </div>
+                    `;
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }, 1500);
+
+            }, 500);
+        }
+
+        // ==========================================
+        // FUNCIONES GENERALES Y UI
+        // ==========================================
+        function navigate(viewName) {
+            const content = document.getElementById('app-content');
+            content.innerHTML = views[viewName];
+            
+            // Actualizar estado activo en navegación Desktop
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-upaep-red', 'bg-gray-100', 'bg-blue-50', 'text-blue-600');
+                if (btn.innerText.toLowerCase().includes(viewName) || (viewName === 'simulator' && btn.innerText.includes('Simulador'))) {
+                    if (viewName === 'simulator') {
+                        btn.classList.add('text-blue-600', 'bg-blue-50');
+                    } else {
+                        btn.classList.add('text-upaep-red', 'bg-gray-100');
+                    }
+                }
+            });
+
+            // Actualizar estado activo en navegación Móvil
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                const target = btn.getAttribute('data-target');
+                
+                // Reset styles
+                if(target === 'simulator') {
+                    const iconBg = btn.querySelector('.simulator-icon-bg');
+                    const text = btn.querySelector('.simulator-text');
+                    iconBg.classList.remove('bg-blue-600');
+                    iconBg.classList.add('bg-gray-900');
+                    text.classList.remove('text-blue-600');
+                    text.classList.add('text-gray-500');
+                } else {
+                    btn.classList.remove('text-upaep-red');
+                    btn.classList.add('text-gray-500');
+                }
+
+                // Apply active styles
+                if (target === viewName) {
+                    if (viewName === 'simulator') {
+                        const iconBg = btn.querySelector('.simulator-icon-bg');
+                        const text = btn.querySelector('.simulator-text');
+                        iconBg.classList.remove('bg-gray-900');
+                        iconBg.classList.add('bg-blue-600');
+                        text.classList.remove('text-gray-500');
+                        text.classList.add('text-blue-600');
+                    } else {
+                        btn.classList.remove('text-gray-500');
+                        btn.classList.add('text-upaep-red');
+                    }
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Modales y Notificaciones
+        function openArticle(id) {
+            const article = articlesDB.find(a => a.id === id);
+            if (!article) return;
+            
+            document.getElementById('article-body').innerHTML = article.content;
+            const modal = document.getElementById('article-modal');
+            const container = document.getElementById('article-container');
+            
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // Reflow
+            modal.classList.remove('opacity-0');
+            container.classList.remove('translate-y-full', 'sm:translate-y-8');
+        }
+
+        function closeArticle() {
+            const modal = document.getElementById('article-modal');
+            const container = document.getElementById('article-container');
+            
+            modal.classList.add('opacity-0');
+            container.classList.add('translate-y-full', 'sm:translate-y-8');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function openVideo(title) {
+            document.getElementById('video-title').innerText = title;
+            const modal = document.getElementById('video-modal');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // Reflow
+            modal.classList.remove('opacity-0');
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('video-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-gray-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 font-medium text-sm';
+            toast.innerHTML = `<i class="fas fa-info-circle text-upaep-red text-lg"></i> ${message}`;
+            
+            container.appendChild(toast);
+            
+            // Animar entrada
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+            
+            // Animar salida y remover
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Inicializar la app
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('home');
+        });
+    </script>
+</body>
+</html>
