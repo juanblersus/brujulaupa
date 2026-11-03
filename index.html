@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brújula UPAEP - Contención y Exploración</title>
+    <title>Brújula Universitaria - Contención y Exploración</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -89,16 +89,16 @@
                     <div class="w-10 h-10 bg-upaep-red text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-red-500/30 group-hover:rotate-12 transition-transform duration-300">
                         <i class="fas fa-compass"></i>
                     </div>
-                    <span class="ml-3 font-extrabold text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">UPAEP</span></span>
+                    <span class="ml-3 font-extrabold text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">Universitaria</span></span>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
-                    <button onclick="navigate('home')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Inicio</button>
-                    <button onclick="navigate('mentors')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Águilas Guía</button>
-                    <button onclick="navigate('simulator')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Simulador</button>
-                    <button onclick="navigate('resources')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Recursos</button>
-                    <button onclick="navigate('messages')" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all relative">
+                    <button onclick="navigate('home')" data-target="home" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Inicio</button>
+                    <button onclick="navigate('mentors')" data-target="mentors" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Guías</button>
+                    <button onclick="navigate('simulator')" data-target="simulator" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Simulador</button>
+                    <button onclick="navigate('resources')" data-target="resources" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Recursos</button>
+                    <button onclick="navigate('messages')" data-target="messages" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all relative">
                         Mensajes
                         <span class="absolute top-2 right-1.5 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
                     </button>
@@ -107,7 +107,7 @@
                 <!-- User Profile & SOS -->
                 <div class="flex items-center space-x-3 sm:space-x-5">
                     <!-- Botón SOS -->
-                    <button onclick="showToast('Línea de Ayuda UPAEP: 800-123-4567')" class="hidden md:flex bg-red-50 text-upaep-red border border-red-100 hover:bg-red-100 px-3 lg:px-4 py-2 rounded-xl text-sm font-bold transition-colors items-center gap-2">
+                    <button onclick="showToast('Línea de Ayuda Universitaria: 800-123-4567')" class="hidden md:flex bg-red-50 text-upaep-red border border-red-100 hover:bg-red-100 px-3 lg:px-4 py-2 rounded-xl text-sm font-bold transition-colors items-center gap-2">
                         <i class="fas fa-phone-alt"></i> <span class="hidden lg:inline">SOS</span>
                     </button>
                     
@@ -138,7 +138,7 @@
             </button>
             <button onclick="navigate('mentors')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="mentors">
                 <i class="fas fa-users text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Águilas</span>
+                <span class="text-[10px] font-semibold">Guías</span>
             </button>
             
             <!-- Botón central Simulador Destacado -->
@@ -220,6 +220,12 @@
         // BASE DE DATOS SIMULADA
         // ==========================================
         const careersDB = {
+            'comunicacion': {
+                name: 'Comunicación y Medios Digitales',
+                bg: 'bg-red-100', color: 'text-upaep-red', icon: 'fa-photo-video',
+                profile: 'Estratega creativo especializado en producción audiovisual, narrativa transmedia, comunicación organizacional y gestión de contenidos digitales.',
+                subjects: ['Producción Audiovisual', 'Guionismo', 'Comportamiento Organizacional', 'Marketing', 'Diseño Digital', 'Historia del Arte', 'Estadística']
+            },
             'industrial': {
                 name: 'Ingeniería Industrial',
                 bg: 'bg-orange-100', color: 'text-orange-600', icon: 'fa-cogs',
@@ -259,7 +265,7 @@
                 title: '¿Cómo hablar con mis papás sobre mi cambio de carrera?',
                 tag: 'Familia',
                 readTime: '6 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El momento temido</h2><p class="text-gray-700 leading-relaxed mb-4">Abordar el tema con la familia puede generar muchísima ansiedad, especialmente si ellos están financiando tus estudios o si provienes de una "familia de abogados" o médicos.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Pasos para la conversación:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Prepárate con datos:</strong> No llegues solo con un "ya no me gusta". Presenta un plan: "Investigué esta otra carrera, puedo revalidar estas materias, el campo laboral es este".</li><li><strong>Elige el momento adecuado:</strong> Evita sacar el tema durante una discusión o cuando estén estresados.</li><li><strong>Asume su reacción:</strong> Es normal que al principio sientan miedo o decepción. Dales tiempo para procesarlo.</li><li><strong>Busca aliados:</strong> Si tienes un orientador psicopedagógico (como los de UPAEP), puedes pedirles que medien en una cita con tus padres.</li></ul>'
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El momento temido</h2><p class="text-gray-700 leading-relaxed mb-4">Abordar el tema con la familia puede generar muchísima ansiedad, especialmente si ellos están financiando tus estudios o si provienes de una "familia de abogados" o médicos.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Pasos para la conversación:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Prepárate con datos:</strong> No llegues solo con un "ya no me gusta". Presenta un plan: "Investigué esta otra carrera, puedo revalidar estas materias, el campo laboral es este".</li><li><strong>Elige el momento adecuado:</strong> Evita sacar el tema durante una discusión o cuando estén estresados.</li><li><strong>Asume su reacción:</strong> Es normal que al principio sientan miedo o decepción. Dales tiempo para procesarlo.</li><li><strong>Busca aliados:</strong> Si cuentas con un orientador psicopedagógico en tu universidad, puedes pedirle que medie en una cita con tus padres.</li></ul>'
             },
             {
                 id: 3,
@@ -280,7 +286,7 @@
                 title: 'Síndrome del impostor: ¿Por qué siento que no pertenezco aquí?',
                 tag: 'Psicología',
                 readTime: '7 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El miedo a ser "descubierto"</h2><p class="text-gray-700 leading-relaxed mb-4">Llegas a clase, ves a tus compañeros participando fluidamente y piensas: "Todos aquí son más inteligentes que yo, en cualquier momento se darán cuenta de que fue un error admitirme". Esto es el Síndrome del Impostor.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">¿Cómo combatirlo?</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Habla del tema:</strong> Te sorprendería saber cuántos de tus compañeros (¡y profesores!) sienten exactamente lo mismo.</li><li><strong>Documenta tus logros:</strong> Guarda correos de felicitación, buenas notas y proyectos de los que te sientas orgulloso. Léelos cuando dudes de ti.</li><li><strong>Acepta que estás aprendiendo:</strong> Estás en la universidad para aprender, no para saberlo todo desde el primer semestre. El error es parte del método.</li></ul>'
+                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El miedo a ser "descubierto"</h2><p class="text-gray-700 leading-relaxed mb-4">Llegas a clase, ves a tus compañeros participando fluidamente y piensas: "Todos aquí son más inteligentes que yo, en cualquier momento se darán cuenta de que fue un error admitirme". Esto es el Síndrome del Impostor.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">¿Cómo combatirlo?</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Habla del tema:</strong> Te sorprendería saber cuántos de tus compañeros (¡y profesores!) sienten exactamente lo mismo.</li><li><strong>Documenta tus logros:</strong> Guarda correos de felicitación, buenas notas y proyectos de lo que te sientas orgulloso. Léelos cuando dudes de ti.</li><li><strong>Acepta que estás aprendiendo:</strong> Estás en la universidad para aprender, no para saberlo todo desde el primer semestre. El error es parte del método.</li></ul>'
             },
             {
                 id: 6,
@@ -357,7 +363,7 @@
                 <div class="slide-up">
                     <header class="mb-12">
                         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Hola, <span class="text-upaep-red">Estudiante</span> 👋</h1>
-                        <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">Bienvenido a tu espacio seguro en UPAEP. Aquí puedes explorar tu verdadera vocación, resolver dudas académicas y encontrar apoyo en tu camino universitario.</p>
+                        <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">Bienvenido a tu espacio seguro en la universidad. Aquí puedes explorar tu verdadera vocación, resolver dudas académicas y encontrar apoyo en tu camino universitario.</p>
                     </header>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
@@ -422,11 +428,11 @@
                 </div>
             `,
             
-            // MENTORES
+            // MENTORES (ESTUDIANTES GUÍA)
             mentors: `
                 <div class="slide-up">
                     <div class="mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-users text-upaep-red mr-3"></i>Águilas Guía</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-users text-upaep-red mr-3"></i>Estudiantes Guía</h2>
                         <p class="text-gray-500 max-w-2xl text-lg leading-relaxed">Conecta con estudiantes de semestres avanzados que ya pasaron por lo mismo que tú. Ellos están listos para escucharte, orientarte y compartir su experiencia.</p>
                     </div>
 
@@ -455,7 +461,7 @@
                             </button>
                         </div>
 
-                            <!-- Mentor 3 -->
+                        <!-- Mentor 3 -->
                         <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
                             <img src="https://placehold.co/120x120/c7d2fe/4f46e5?text=D" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
@@ -549,7 +555,7 @@
                                 </div>
                                 <div class="flex-grow text-center sm:text-left">
                                     <h4 class="text-white font-bold text-lg">Manejando la ansiedad en semanas de exámenes</h4>
-                                    <p class="text-gray-400 text-sm">Con la Dra. Elena Ríos · Psicopedagogía UPAEP</p>
+                                    <p class="text-gray-400 text-sm">Con la Dra. Elena Ríos · Orientación Psicopedagógica</p>
                                 </div>
                                 <div class="text-gray-500 hidden sm:flex items-center gap-1 opacity-60">
                                     <div class="w-1 h-3 bg-gray-400 rounded-full animate-bounce"></div>
@@ -672,6 +678,7 @@
                         <div class="w-full lg:w-2/5">
                             <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Estudio actualmente:</label>
                             <select id="sim-source" class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl px-5 py-4 font-semibold focus:outline-none focus:border-upaep-red focus:ring-2 focus:ring-red-100 transition-all appearance-none cursor-pointer">
+                                <option value="comunicacion">Comunicación y Medios Digitales</option>
                                 <option value="industrial">Ingeniería Industrial</option>
                                 <option value="administracion">Administración de Empresas</option>
                                 <option value="arquitectura">Arquitectura</option>
@@ -687,6 +694,7 @@
                             <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Me interesa cambiar a:</label>
                             <select id="sim-target" class="w-full bg-white border-2 border-upaep-red text-upaep-red rounded-xl px-5 py-4 font-bold focus:outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none cursor-pointer shadow-sm">
                                 <option value="administracion">Administración de Empresas</option>
+                                <option value="comunicacion">Comunicación y Medios Digitales</option>
                                 <option value="industrial">Ingeniería Industrial</option>
                                 <option value="arquitectura">Arquitectura</option>
                                 <option value="psicologia">Psicología</option>
@@ -765,7 +773,7 @@
                                 <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full">
                                 <div>
                                     <h3 class="font-bold text-gray-900 text-lg">Diego Torres</h3>
-                                    <p class="text-xs text-upaep-red font-semibold">Mentor Arquitectura</p>
+                                    <p class="text-xs text-upaep-red font-semibold">Estudiante Guía · Arquitectura</p>
                                 </div>
                             </div>
                             <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button>
@@ -780,7 +788,7 @@
 
                             <div class="flex items-end justify-end gap-2">
                                 <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
-                                    <p class="text-sm">Hola Diego, vi tu perfil en la Brújula. Estoy en 2do semestre de Industrial pero me llama muchísimo la atención Arqui, solo que me da miedo no dar el ancho con las maquetas.</p>
+                                    <p class="text-sm">Hola Diego, vi tu perfil en la Brújula. Estoy en 2do semestre pero me llama muchísimo la atención Arqui, solo que me da miedo no dar el ancho con las maquetas.</p>
                                 </div>
                             </div>
 
@@ -794,7 +802,7 @@
                             <div class="flex items-end gap-2">
                                 <div class="w-8 h-8 rounded-full bg-transparent"></div>
                                 <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
-                                    <p class="text-sm">¿Te parece si nos tomamos un café en el Ágora y te cuento cómo es el ritmo de trabajo? ¡Sin compromiso!</p>
+                                    <p class="text-sm">¿Te parece si nos tomamos un café en la cafetería central y te cuento cómo es el ritmo de trabajo? ¡Sin compromiso!</p>
                                 </div>
                             </div>
                         </div>
@@ -906,12 +914,10 @@
         function openThermometer() {
             const modal = document.getElementById('thermometer-modal');
             modal.classList.remove('hidden');
-            // Trigger reflow
             void modal.offsetWidth;
             modal.classList.remove('opacity-0');
             modal.querySelector('div').classList.remove('scale-95');
             
-            // Reiniciar estado
             currentThermoQuestion = 0;
             totalThermoRisk = 0;
             renderThermoQuestion();
@@ -979,7 +985,6 @@
             const contentDiv = document.getElementById('thermo-content');
             let html = '';
 
-            // Umbral de riesgo: si es mayor a 4, requiere atención
             if (totalThermoRisk > 4) {
                 html = `
                     <div class="text-center fade-in">
@@ -994,7 +999,7 @@
                                 <i class="fas fa-compass text-lg"></i> Realizar Test Vocacional
                             </button>
                             <button onclick="closeThermometer(); navigate('mentors')" class="w-full bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3">
-                                <i class="fas fa-users text-lg"></i> Hablar con un Mentor (Águila Guía)
+                                <i class="fas fa-users text-lg"></i> Hablar con un Estudiante Guía
                             </button>
                             <button onclick="closeThermometer(); showToast('Redirigiendo a citas psicopedagógicas...')" class="w-full bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3 mt-2">
                                 <i class="fas fa-calendar-check text-lg"></i> Agendar Cita Psicopedagógica
@@ -1026,6 +1031,7 @@
             {
                 text: "¿Qué actividad disfrutas más resolver o hacer en tu tiempo libre?",
                 options: [
+                    { text: "Crear videos, contar historias visuales o producir contenido digital", category: "comunicacion" },
                     { text: "Armar cosas, entender cómo funcionan o resolver acertijos lógicos", category: "industrial" },
                     { text: "Organizar planes con amigos, liderar grupos o administrar finanzas", category: "administracion" },
                     { text: "Dibujar, decorar mi espacio o apreciar el diseño y la estética", category: "arquitectura" },
@@ -1035,15 +1041,17 @@
             {
                 text: "Si te asignan un proyecto en equipo, ¿qué rol prefieres tomar?",
                 options: [
+                    { text: "Escribir el guion, grabar o dirigir la comunicación del proyecto", category: "comunicacion" },
                     { text: "Elaborar los cálculos, optimizar los tiempos y estructurar el proceso", category: "industrial" },
                     { text: "Coordinar al equipo, delegar tareas y asegurar que se cumplan las metas", category: "administracion" },
-                    { text: "Hacer los bocetos, diseñar la presentación visual y el estilo", category: "arquitectura" },
+                    { text: "Hacer los bocetos, diseñar la presentación espacial y el estilo", category: "arquitectura" },
                     { text: "Mediar si hay conflictos y asegurar que el equipo trabaje en armonía", category: "psicologia" }
                 ]
             },
             {
                 text: "¿Qué tipo de temas o documentales te llaman más la atención?",
                 options: [
+                    { text: "Cine, medios digitales, cultura pop o narrativa transmedia", category: "comunicacion" },
                     { text: "Avances tecnológicos, robótica, manufactura o ciencias exactas", category: "industrial" },
                     { text: "Casos de éxito de empresas, emprendimiento o economía global", category: "administracion" },
                     { text: "Historia del arte, grandes construcciones o diseño de interiores", category: "arquitectura" },
@@ -1053,15 +1061,17 @@
             {
                 text: "Imagina tu espacio de trabajo ideal en el futuro, ¿cómo sería?",
                 options: [
+                    { text: "Un estudio de grabación, agencia digital o set de producción", category: "comunicacion" },
                     { text: "Una planta de producción, laboratorio o centro tecnológico", category: "industrial" },
                     { text: "Una oficina corporativa, sala de juntas o dirigiendo mi negocio", category: "administracion" },
-                    { text: "Un estudio creativo, un despacho de diseño o supervisando una obra", category: "arquitectura" },
+                    { text: "Un taller de arquitectura, despacho de diseño o supervisando una obra", category: "arquitectura" },
                     { text: "Un consultorio privado, una clínica o el área de talento humano", category: "psicologia" }
                 ]
             },
             {
                 text: "¿Qué impacto principal te gustaría lograr a través de tu profesión?",
                 options: [
+                    { text: "Comunicar ideas poderosas, informar y conectar audiencias", category: "comunicacion" },
                     { text: "Mejorar la eficiencia de los procesos y crear soluciones tecnológicas", category: "industrial" },
                     { text: "Generar empleo, liderar el mercado y crear marcas innovadoras", category: "administracion" },
                     { text: "Mejorar las ciudades creando espacios hermosos y sostenibles", category: "arquitectura" },
@@ -1071,13 +1081,12 @@
         ];
 
         let currentVocationalIndex = 0;
-        let vocationalScores = { industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
+        let vocationalScores = { comunicacion: 0, industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
 
         function startVocationalTest() {
             currentVocationalIndex = 0;
-            vocationalScores = { industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
+            vocationalScores = { comunicacion: 0, industrial: 0, administracion: 0, arquitectura: 0, psicologia: 0 };
             
-            // Allow DOM to update if called right after navigation
             setTimeout(() => {
                 renderVocationalQuestion();
             }, 50);
@@ -1130,7 +1139,7 @@
         }
 
         function showVocationalResults() {
-            let highestCategory = 'industrial';
+            let highestCategory = 'comunicacion';
             let maxScore = -1;
             for (const [category, score] of Object.entries(vocationalScores)) {
                 if (score > maxScore) {
@@ -1179,13 +1188,15 @@
         // ==========================================
         // LÓGICA DEL SIMULADOR
         // ==========================================
-        
-        // Helper function for navigating and triggering the simulation from test results
         function simulateCareer(category) {
             navigate('simulator');
             setTimeout(() => {
+                const sourceSelect = document.getElementById('sim-source');
                 const targetSelect = document.getElementById('sim-target');
                 if (targetSelect) {
+                    if (sourceSelect && sourceSelect.value === category) {
+                        sourceSelect.value = category === 'industrial' ? 'comunicacion' : 'industrial';
+                    }
                     targetSelect.value = category;
                     runSimulation();
                 }
@@ -1206,19 +1217,19 @@
             const target = careersDB[targetKey];
             
             resultsContainer.classList.remove('hidden');
-            // Trigger reflow
             void resultsContainer.offsetWidth;
             resultsContainer.classList.remove('opacity-0', 'translate-y-4');
 
-            // Simulación de materias (lógica visual)
-            const commonSubjects = source.subjects.filter(s => target.subjects.includes(s));
-            // Agregar materias genéricas de tronco común para simulación
-            commonSubjects.push('Formación Humanista', 'Inglés', 'Habilidades Universitarias');
+            // Materias de tronco común institucional fijas
+            const coreSubjects = ['Formación Humanista', 'Inglés', 'Habilidades Universitarias'];
+            const sharedCareerSubjects = source.subjects.filter(s => target.subjects.includes(s));
+            const commonSubjects = [...sharedCareerSubjects, ...coreSubjects];
             
             const newSubjects = target.subjects.filter(s => !source.subjects.includes(s));
 
-            // Simular porcentaje de avance salvado (aleatorio realista)
-            const savedPercentage = Math.floor(Math.random() * (45 - 20 + 1) + 20);
+            // Cálculo determinista de porcentaje de avance salvado (basado en materias reales compartidas)
+            const totalEvaluatedSubjects = target.subjects.length + coreSubjects.length;
+            const savedPercentage = Math.round((commonSubjects.length / totalEvaluatedSubjects) * 100);
 
             resultsContainer.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1243,7 +1254,7 @@
                     <!-- Revalidación Estimada -->
                     <div class="bg-white rounded-[2.5rem] p-8 sm:p-10 border border-gray-100 shadow-sm flex flex-col justify-center">
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Simulación de Revalidación</h3>
-                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Estimación basada en el tronco común interdepartamental. Los resultados reales pueden variar.</p>
+                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Estimación basada en el tronco común interdepartamental y materias equivalentes entre ambos planes.</p>
                         
                         <div class="mb-4 flex justify-between items-end">
                             <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Créditos conservados</span>
@@ -1272,7 +1283,6 @@
                 </div>
             `;
 
-            // Animar la barra después de inyectar
             setTimeout(() => {
                 const bar = resultsContainer.querySelector('.progress-bar-anim');
                 if (bar) {
@@ -1293,7 +1303,6 @@
 
             const chatHistory = document.getElementById('chat-history');
             
-            // Render user message
             chatHistory.innerHTML += `
                 <div class="flex items-end justify-end gap-2 fade-in">
                     <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
@@ -1305,7 +1314,6 @@
             input.value = '';
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-            // Simulate typing indicator
             const typingId = 'typing-' + Date.now();
             setTimeout(() => {
                 chatHistory.innerHTML += `
@@ -1320,7 +1328,6 @@
                 `;
                 chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                // Simulate reply
                 setTimeout(() => {
                     const typingIndicator = document.getElementById(typingId);
                     if (typingIndicator) typingIndicator.remove();
@@ -1346,10 +1353,12 @@
             const content = document.getElementById('app-content');
             content.innerHTML = views[viewName];
             
-            // Actualizar estado activo en navegación Desktop
+            // Actualizar estado activo en navegación Desktop usando data-target
             document.querySelectorAll('.nav-btn').forEach(btn => {
+                const target = btn.getAttribute('data-target');
                 btn.classList.remove('text-upaep-red', 'bg-gray-100', 'bg-blue-50', 'text-blue-600');
-                if (btn.innerText.toLowerCase().includes(viewName) || (viewName === 'simulator' && btn.innerText.includes('Simulador'))) {
+                
+                if (target === viewName) {
                     if (viewName === 'simulator') {
                         btn.classList.add('text-blue-600', 'bg-blue-50');
                     } else {
@@ -1362,7 +1371,6 @@
             document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
                 const target = btn.getAttribute('data-target');
                 
-                // Reset styles
                 if(target === 'simulator') {
                     const iconBg = btn.querySelector('.simulator-icon-bg');
                     const text = btn.querySelector('.simulator-text');
@@ -1375,7 +1383,6 @@
                     btn.classList.add('text-gray-500');
                 }
 
-                // Apply active styles
                 if (target === viewName) {
                     if (viewName === 'simulator') {
                         const iconBg = btn.querySelector('.simulator-icon-bg');
@@ -1404,7 +1411,7 @@
             const container = document.getElementById('article-container');
             
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Reflow
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0');
             container.classList.remove('translate-y-full', 'sm:translate-y-8');
         }
@@ -1422,7 +1429,7 @@
             document.getElementById('video-title').innerText = title;
             const modal = document.getElementById('video-modal');
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Reflow
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0');
         }
 
@@ -1440,12 +1447,10 @@
             
             container.appendChild(toast);
             
-            // Animar entrada
             setTimeout(() => {
                 toast.classList.remove('translate-y-10', 'opacity-0');
             }, 10);
             
-            // Animar salida y remover
             setTimeout(() => {
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
