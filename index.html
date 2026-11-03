@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Brújula Universitaria - Contención y Exploración</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome para Íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,33 +30,41 @@
     </script>
 
     <style>
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
             background-color: #F8FAFC;
             color: #334155;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         
         .glass-header {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
         
         .glass-modal {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .slide-up {
-            animation: slideUp 0.5s ease-out forwards;
+            animation: slideUp 0.45s ease-out forwards;
         }
 
         .fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
+            animation: fadeIn 0.35s ease-out forwards;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -77,145 +85,567 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.05); opacity: 0.8; }
         }
+
+        /* Soporte para barra inferior en pantallas móviles modernas */
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen pb-20 md:pb-0">
+<body class="flex flex-col min-h-screen text-base leading-relaxed">
 
-    <nav class="glass-header sticky top-0 z-40 w-full transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigate('home')">
-                    <div class="w-10 h-10 bg-upaep-red text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-red-500/30 group-hover:rotate-12 transition-transform duration-300">
-                        <i class="fas fa-compass"></i>
+    <!-- ========================================== -->
+    <!-- LANDING PAGE PREVIA (PRESENTACIÓN COMERCIAL) -->
+    <!-- ========================================== -->
+    <div id="landing-page" class="min-h-screen flex flex-col bg-[#F8FAFC]">
+        <!-- Navbar Landing -->
+        <header class="glass-header sticky top-0 z-40 w-full">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16 sm:h-20">
+                    <!-- Logo -->
+                    <div class="flex items-center cursor-pointer group shrink-0" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-upaep-red text-white rounded-xl flex items-center justify-center font-bold text-lg sm:text-xl shadow-lg shadow-red-500/30 group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <span class="ml-2.5 sm:ml-3 font-extrabold text-base sm:text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">Universitaria</span></span>
                     </div>
-                    <span class="ml-3 font-extrabold text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">Universitaria</span></span>
+
+                    <!-- Links Landing (Escritorio) -->
+                    <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-600">
+                        <a href="#propuesta" class="hover:text-upaep-red transition-colors">Propuesta de Valor</a>
+                        <a href="#caracteristicas" class="hover:text-upaep-red transition-colors">Características</a>
+                        <a href="#beneficios" class="hover:text-upaep-red transition-colors">Beneficios</a>
+                        <a href="#modelo-comercial" class="hover:text-upaep-red transition-colors">Modelo Comercial</a>
+                        <a href="#precio" class="hover:text-upaep-red transition-colors">Precio</a>
+                        <button onclick="enterApp('info')" class="text-upaep-red hover:underline flex items-center gap-1.5 font-bold">
+                            <i class="fas fa-headset"></i> Pestaña Información
+                        </button>
+                    </div>
+
+                    <!-- Botones de Acción y Menú Móvil -->
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <button onclick="enterApp('home')" class="bg-gray-900 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold hover:bg-upaep-red transition-all shadow-md flex items-center gap-2">
+                            <span>Entrar<span class="hidden sm:inline"> a la Plataforma</span></span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button onclick="toggleLandingMenu()" aria-label="Abrir menú de secciones" class="lg:hidden w-10 h-10 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                            <i id="landing-menu-icon" class="fas fa-bars text-base"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
-                    <button onclick="navigate('home')" data-target="home" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Inicio</button>
-                    <button onclick="navigate('mentors')" data-target="mentors" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Guías</button>
-                    <button onclick="navigate('simulator')" data-target="simulator" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Simulador</button>
-                    <button onclick="navigate('resources')" data-target="resources" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Recursos</button>
-                    <button onclick="navigate('messages')" data-target="messages" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all relative">
-                        Mensajes
-                        <span class="absolute top-2 right-1.5 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
-                    </button>
-                </div>
-
-                <!-- User Profile & SOS -->
-                <div class="flex items-center space-x-3 sm:space-x-5">
-                    <!-- Botón SOS -->
-                    <button onclick="showToast('Línea de Ayuda Universitaria: 800-123-4567')" class="hidden md:flex bg-red-50 text-upaep-red border border-red-100 hover:bg-red-100 px-3 lg:px-4 py-2 rounded-xl text-sm font-bold transition-colors items-center gap-2">
-                        <i class="fas fa-phone-alt"></i> <span class="hidden lg:inline">SOS</span>
-                    </button>
-                    
-                    <!-- Separador visual -->
-                    <div class="hidden md:block w-px h-6 bg-gray-200"></div>
-
-                    <!-- Botón de Perfil con Info -->
-                    <button onclick="navigate('profile')" class="flex items-center gap-3 text-left group">
-                        <div class="hidden sm:block text-right">
-                            <p class="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-upaep-red transition-colors">Juan Carlos</p>
-                            <p class="text-xs text-gray-500 font-medium leading-none">Comunicación</p>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden group-hover:ring-2 group-hover:ring-upaep-red group-hover:ring-offset-2 transition-all shrink-0">
-                            <img src="https://placehold.co/100x100/334155/ffffff?text=JC" alt="Perfil" class="w-full h-full object-cover">
-                        </div>
-                    </button>
+                <!-- Menú Desplegable Móvil para la Landing Page -->
+                <div id="landing-mobile-menu" class="hidden lg:hidden pb-4 pt-2 border-t border-gray-100 fade-in">
+                    <div class="grid grid-cols-2 gap-2 text-sm font-semibold text-gray-700">
+                        <a href="#propuesta" onclick="toggleLandingMenu()" class="px-3 py-2.5 rounded-xl hover:bg-gray-100 flex items-center gap-2"><i class="fas fa-bullseye text-upaep-red text-xs"></i> Propuesta</a>
+                        <a href="#caracteristicas" onclick="toggleLandingMenu()" class="px-3 py-2.5 rounded-xl hover:bg-gray-100 flex items-center gap-2"><i class="fas fa-star text-upaep-red text-xs"></i> Características</a>
+                        <a href="#beneficios" onclick="toggleLandingMenu()" class="px-3 py-2.5 rounded-xl hover:bg-gray-100 flex items-center gap-2"><i class="fas fa-check-double text-upaep-red text-xs"></i> Beneficios</a>
+                        <a href="#modelo-comercial" onclick="toggleLandingMenu()" class="px-3 py-2.5 rounded-xl hover:bg-gray-100 flex items-center gap-2"><i class="fas fa-briefcase text-upaep-red text-xs"></i> Modelo Comercial</a>
+                        <a href="#precio" onclick="toggleLandingMenu()" class="px-3 py-2.5 rounded-xl hover:bg-gray-100 flex items-center gap-2"><i class="fas fa-tag text-upaep-red text-xs"></i> Precio Anual</a>
+                        <button onclick="toggleLandingMenu(); enterApp('info')" class="px-3 py-2.5 rounded-xl bg-red-50 text-upaep-red font-bold flex items-center gap-2 text-left"><i class="fas fa-headset text-xs"></i> Información</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <!-- Navegación Móvil (Bottom Bar) -->
-    <div class="md:hidden fixed bottom-0 left-0 w-full glass-header border-t border-gray-200 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div class="flex justify-around items-end h-16 pb-2 px-2">
-            <button onclick="navigate('home')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="home">
-                <i class="fas fa-home text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Inicio</span>
-            </button>
-            <button onclick="navigate('mentors')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="mentors">
-                <i class="fas fa-users text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Guías</span>
-            </button>
-            
-            <!-- Botón central Simulador Destacado -->
-            <button onclick="navigate('simulator')" class="mobile-nav-btn relative w-full flex flex-col items-center justify-center group" data-target="simulator">
-                <div class="absolute -top-6 w-14 h-14 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg border-4 border-[#F8FAFC] group-hover:bg-blue-600 transition-colors simulator-icon-bg">
-                    <i class="fas fa-exchange-alt text-xl"></i>
-                </div>
-                <span class="text-[10px] font-semibold text-gray-500 mt-6 group-hover:text-blue-600 transition-colors simulator-text">Simulador</span>
-            </button>
+        <!-- Hero / Propuesta de Valor -->
+        <section id="propuesta" class="relative overflow-hidden py-10 sm:py-16 md:py-24 border-b border-gray-100">
+            <div class="absolute top-0 right-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-red-100/60 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+            <div class="absolute bottom-0 left-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-100/60 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
-            <button onclick="navigate('resources')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors" data-target="resources">
-                <i class="fas fa-photo-video text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Recursos</span>
-            </button>
-            <button onclick="navigate('messages')" class="mobile-nav-btn w-full flex flex-col items-center justify-center text-gray-500 hover:text-upaep-red transition-colors relative" data-target="messages">
-                <div class="relative">
-                    <i class="fas fa-comment-dots text-xl mb-1"></i>
-                    <span class="absolute -top-1 -right-2 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    <div class="lg:col-span-7 slide-up">
+                        <span class="inline-flex items-center gap-2 bg-red-50 text-upaep-red border border-red-100 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-5">
+                            <i class="fas fa-compass"></i> Propuesta de Valor
+                        </span>
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-tight mb-6">
+                            Acompañamiento vocacional <span class="text-upaep-red">sin temor a equivocarte.</span>
+                        </h1>
+                        <div class="bg-white p-5 sm:p-8 rounded-3xl border border-gray-200/80 shadow-sm mb-8">
+                            <p class="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed">
+                                Para estudiantes de preparatoria y primer ingreso que enfrentan dudas sobre su futuro, <strong class="text-gray-900">Brújula Universitaria</strong> ofrece un acompañamiento vocacional basado en evaluaciones de habilidades e información real de las carreras, brindando la seguridad necesaria para tomar la decisión correcta sin el temor de perder tiempo o percibir el cambio como un fracaso.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3.5 sm:gap-4">
+                            <button onclick="enterApp('home')" class="w-full sm:w-auto bg-upaep-red text-white px-7 py-4 rounded-2xl font-bold text-base hover:bg-red-700 transition-all shadow-xl shadow-red-500/25 flex items-center justify-center gap-3">
+                                <i class="fas fa-rocket"></i> Explorar Plataforma Interactiva
+                            </button>
+                            <button onclick="enterApp('info')" class="w-full sm:w-auto bg-white text-gray-900 border-2 border-gray-200 hover:border-gray-900 px-7 py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-3">
+                                <i class="fas fa-user-tie text-upaep-red"></i> Hablar con un Asesor
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Visual Resumen -->
+                    <div class="lg:col-span-5 slide-up">
+                        <div class="bg-gray-900 text-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-40 h-40 bg-upaep-red rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
+                            <div class="flex items-center justify-between mb-6 sm:mb-8">
+                                <span class="bg-white/10 text-white text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">Ecosistema Estudiantil</span>
+                                <i class="fas fa-shield-heart text-2xl text-upaep-red"></i>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-bold mb-3">Retención y Bienestar Universitario</h3>
+                            <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">Transformamos la incertidumbre vocacional de los primeros semestres en decisiones informadas y acompañadas.</p>
+                            
+                            <div class="space-y-3.5 sm:space-y-4">
+                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                                        <i class="fas fa-heartbeat"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm sm:text-base">Contención Emocional</h4>
+                                        <p class="text-xs sm:text-sm text-gray-300">Monitoreo semanal de estrés y adaptación</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm sm:text-base">Certeza Académica</h4>
+                                        <p class="text-xs sm:text-sm text-gray-300">Simulación real de convalidación de materias</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                                        <i class="fas fa-comments"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm sm:text-base">Comunicación Two-Step Flow</h4>
+                                        <p class="text-xs sm:text-sm text-gray-300">Conexión con guías pares, asesores y expertos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <span class="text-[10px] font-semibold">Mensajes</span>
-            </button>
-        </div>
+            </div>
+        </section>
+
+        <!-- Características -->
+        <section id="caracteristicas" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+                <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Diseño Centrado en el Estudiante</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900">Características de la Plataforma</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-universal-access"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Accesible</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Disponible en cualquier computadora, tableta o teléfono móvil con navegación intuitiva y lectura clara.</p>
+                </div>
+
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hand-pointer"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Interactiva</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Herramientas dinámicas de autoevaluación, simulación en tiempo real y mensajería directa con retroalimentación inmediata.</p>
+                </div>
+
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Visualmente llamativa</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Interfaz moderna, limpia y empática que reduce la fatiga visual y transmite seguridad durante momentos de duda vocacional.</p>
+                </div>
+
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Multifuncional</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Integra diagnóstico emocional, exploración vocacional, simulación curricular, mentoría entre pares y biblioteca multimedia en un solo lugar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beneficios -->
+        <section id="beneficios" class="py-12 sm:py-16 md:py-20 bg-white border-y border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+                    <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Impacto Real</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3">Beneficios para la Comunidad Estudiantil</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">Cada módulo responde a las inquietudes reales que viven los jóvenes al elegir o revalidar su camino profesional.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    <!-- Beneficio 1 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-red-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-red-100 text-upaep-red flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Check-in Semanal Reflexivo</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Te permite realizar un Check-in semanal que te ayuda a reflexionar sobre tu última semana en la universidad y brindarte apoyo e información necesaria.</p>
+                        </div>
+                        <button onclick="enterApp('home'); setTimeout(openThermometer, 200);" class="mt-6 text-sm font-bold text-upaep-red hover:underline flex items-center gap-1.5">
+                            Probar Check-in <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Beneficio 2 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-purple-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Test Vocacional en Línea</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso a un test vocacional en línea que te permite dar el primer paso para descubrir tu verdadera vocación de forma clara y estructurada.</p>
+                        </div>
+                        <button onclick="enterApp('vocational'); setTimeout(startVocationalTest, 200);" class="mt-6 text-sm font-bold text-purple-600 hover:underline flex items-center gap-1.5">
+                            Ir al Test Vocacional <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Beneficio 3 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-blue-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-address-book"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Directorio de Acompañamiento</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Directorio con asesores, estudiantes que han pasado por procesos similares y expertos dispuestos a orientarte en tu toma de decisiones.</p>
+                        </div>
+                        <button onclick="enterApp('mentors')" class="mt-6 text-sm font-bold text-blue-600 hover:underline flex items-center gap-1.5">
+                            Ver Directorio de Guías <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Beneficio 4 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-indigo-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Chat con Guías, Pares y Expertos</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Comunicación directa basada en la teoría de comunicación <strong>Two-Step Flow</strong>, facilitando el flujo de información confiable a través de líderes de opinión estudiantiles.</p>
+                        </div>
+                        <button onclick="enterApp('messages')" class="mt-6 text-sm font-bold text-indigo-600 hover:underline flex items-center gap-1.5">
+                            Abrir Chat <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Beneficio 5 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-green-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Simulador de Cambio de Carrera</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso al simulador de cambios de carrera, que te permite saber qué materias pueden convalidar en caso de un cambio de licenciatura.</p>
+                        </div>
+                        <button onclick="enterApp('simulator')" class="mt-6 text-sm font-bold text-green-600 hover:underline flex items-center gap-1.5">
+                            Simular Convalidación <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Beneficio 6 -->
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-orange-200 transition-all">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-5">
+                                <i class="fas fa-photo-video"></i>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Contenido Multimedia Estudiantil</h3>
+                            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso a contenido informativo (videos, imágenes, podcasts y lecturas) creado específicamente para responder a las dudas de la comunidad estudiantil.</p>
+                        </div>
+                        <button onclick="enterApp('resources')" class="mt-6 text-sm font-bold text-orange-600 hover:underline flex items-center gap-1.5">
+                            Explorar Recursos <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modelo Comercial y Precio -->
+        <section id="modelo-comercial" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+                <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Estructura de Negocio</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900">Modelo Comercial y Membresía</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
+                <!-- Segmento de Clientes y Canales -->
+                <div class="lg:col-span-7 flex flex-col gap-6 justify-between">
+                    <div class="bg-white p-6 sm:p-10 rounded-3xl border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Público Objetivo (Usuario Final)</span>
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Segmento de Clientes</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                            El producto va dirigido a <strong>estudiantes de 17 a 20 años</strong> que están ingresando o cursando sus primeros semestres de universidad, para llevar un control respecto a sus dudas e inquietudes sobre su carrera y vocación, mientras la contratación se realiza de forma institucional por parte de las universidades.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 sm:p-10 rounded-3xl border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-upaep-red">Adquisición e Implementación</span>
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Canales de Distribución y Venta</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 text-sm sm:text-base leading-relaxed mb-6">
+                            Para obtener más información de los servicios de <strong>Brújula Universitaria</strong>, puedes solicitar hablar con un asesor en la pestaña <strong>“Información”</strong> y se comunicarán contigo para brindarte atención personalizada.
+                        </p>
+                        <button onclick="enterApp('info')" class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3.5 px-6 rounded-xl text-sm transition inline-flex items-center justify-center gap-2">
+                            <i class="fas fa-headset text-upaep-red"></i> Ir a la pestaña "Información"
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Precio -->
+                <div id="precio" class="lg:col-span-5">
+                    <div class="bg-gray-900 text-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl h-full flex flex-col justify-between relative overflow-hidden border-2 border-gray-800">
+                        <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-upaep-red rounded-full blur-3xl opacity-20"></div>
+                        
+                        <div>
+                            <span class="bg-upaep-red text-white text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider inline-block mb-5">
+                                Licencia Institucional
+                            </span>
+                            <h3 class="text-xl sm:text-2xl font-bold mb-2">Membresía Anual para Universidades</h3>
+                            <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
+                                Las universidades pueden hacerse con los servicios de la plataforma <strong>“Brújula Universitaria”</strong> adquiriendo la membresía anual.
+                            </p>
+
+                            <div class="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-6 mb-6 sm:mb-8">
+                                <span class="text-xs text-gray-300 uppercase font-bold tracking-wider block mb-1">Costo de Membresía Anual</span>
+                                <div class="flex flex-wrap items-baseline gap-2">
+                                    <span class="text-3xl sm:text-5xl font-black text-white">$500,000</span>
+                                    <span class="text-gray-300 font-semibold text-sm">por año</span>
+                                </div>
+                            </div>
+
+                            <ul class="space-y-3 text-sm sm:text-base text-gray-200 mb-8">
+                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-400 mt-1 shrink-0"></i> <span>Acceso integral para la comunidad de primer ingreso (17 a 20 años)</span></li>
+                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-400 mt-1 shrink-0"></i> <span>Personalización de planes de estudio en el Simulador</span></li>
+                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-400 mt-1 shrink-0"></i> <span>Red de mensajería Two-Step Flow y directorio de mentores</span></li>
+                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-400 mt-1 shrink-0"></i> <span>Soporte continuo y actualización de recursos multimedia</span></li>
+                            </ul>
+                        </div>
+
+                        <button onclick="enterApp('info')" class="w-full bg-upaep-red hover:bg-red-700 text-white font-bold py-4 px-6 rounded-2xl transition shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 relative z-10 text-sm sm:text-base">
+                            <i class="fas fa-paper-plane"></i> Solicitar Membresía con un Asesor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Landing -->
+        <footer class="bg-white border-t border-gray-200/80 py-8 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 bg-upaep-red text-white rounded-lg flex items-center justify-center text-xs">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <span class="font-bold text-gray-900 text-sm">Brújula Universitaria</span>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-500">Plataforma de contención emocional y exploración vocacional universitaria.</p>
+                <button onclick="enterApp('home')" class="text-xs sm:text-sm font-bold text-upaep-red hover:underline">
+                    Abrir Plataforma Interactiva &rarr;
+                </button>
+            </div>
+        </footer>
     </div>
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" id="app-content">
-        <!-- Content gets injected here via JS -->
-    </main>
+    <!-- ========================================== -->
+    <!-- APLICACIÓN INTERACTIVA (SPA PRINCIPAL)     -->
+    <!-- ========================================== -->
+    <div id="platform-app" class="hidden flex-col min-h-screen pb-24 md:pb-0">
+        <nav class="glass-header sticky top-0 z-40 w-full transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16 sm:h-20">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigate('home')">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-upaep-red text-white rounded-xl flex items-center justify-center font-bold text-lg sm:text-xl shadow-lg shadow-red-500/30 group-hover:rotate-12 transition-transform duration-300">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <span class="ml-2.5 sm:ml-3 font-extrabold text-base sm:text-xl tracking-tight text-gray-900">Brújula<span class="text-upaep-red">Universitaria</span></span>
+                    </div>
 
-    <!-- Modal: Termómetro Semanal -->
-    <div id="thermometer-modal" class="fixed inset-0 glass-modal z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl mx-4 overflow-hidden transform scale-95 transition-transform duration-300 relative">
-            <button onclick="closeThermometer()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition z-10">
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex items-center space-x-1 lg:space-x-1.5">
+                        <button onclick="navigate('home')" data-target="home" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Inicio</button>
+                        <button onclick="navigate('mentors')" data-target="mentors" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Guías</button>
+                        <button onclick="navigate('simulator')" data-target="simulator" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-1.5"><i class="fas fa-exchange-alt"></i> Simulador</button>
+                        <button onclick="navigate('resources')" data-target="resources" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all">Recursos</button>
+                        <button onclick="navigate('messages')" data-target="messages" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all relative">
+                            Mensajes
+                            <span class="absolute top-2 right-1.5 w-2.5 h-2.5 bg-upaep-red rounded-full border-2 border-white"></span>
+                        </button>
+                        <button onclick="navigate('info')" data-target="info" class="nav-btn px-3 lg:px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-upaep-red transition-all flex items-center gap-1.5">
+                            <i class="fas fa-info-circle"></i> Información
+                        </button>
+                    </div>
+
+                    <!-- User Profile, SOS & Landing Return -->
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <button onclick="showLandingPage()" title="Volver a la presentación comercial" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5">
+                            <i class="fas fa-home text-upaep-red"></i>
+                            <span class="hidden lg:inline">Presentación</span>
+                        </button>
+
+                        <!-- Botón SOS (Visible en móvil y escritorio) -->
+                        <button onclick="showToast('Línea de Ayuda Universitaria: 800-123-4567')" title="Línea de Ayuda SOS" class="flex bg-red-50 text-upaep-red border border-red-100 hover:bg-red-100 px-2.5 sm:px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-colors items-center gap-1.5">
+                            <i class="fas fa-phone-alt"></i> <span class="hidden sm:inline">SOS</span>
+                        </button>
+                        
+                        <!-- Separador visual -->
+                        <div class="hidden sm:block w-px h-6 bg-gray-200"></div>
+
+                        <!-- Botón de Perfil con Info -->
+                        <button onclick="navigate('profile')" class="flex items-center gap-2.5 text-left group">
+                            <div class="hidden xl:block text-right">
+                                <p class="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-upaep-red transition-colors">Juan Carlos</p>
+                                <p class="text-xs text-gray-500 font-medium leading-none">Comunicación</p>
+                            </div>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden group-hover:ring-2 group-hover:ring-upaep-red group-hover:ring-offset-2 transition-all shrink-0">
+                                <img src="https://placehold.co/100x100/334155/ffffff?text=JC" alt="Perfil" class="w-full h-full object-cover">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Navegación Móvil (Bottom Bar Optimizada para Pantallas Táctiles) -->
+        <div class="md:hidden fixed bottom-0 left-0 w-full glass-header border-t border-gray-200 z-40 shadow-[0_-4px_10px_rgba(0,0,0,0.06)] safe-bottom">
+            <div class="grid grid-cols-6 items-end h-16 pt-1 px-1">
+                <button onclick="navigate('home')" class="mobile-nav-btn flex flex-col items-center justify-center py-1 text-gray-500 hover:text-upaep-red transition-colors" data-target="home">
+                    <i class="fas fa-home text-base mb-0.5"></i>
+                    <span class="text-[10px] font-semibold leading-tight">Inicio</span>
+                </button>
+                <button onclick="navigate('mentors')" class="mobile-nav-btn flex flex-col items-center justify-center py-1 text-gray-500 hover:text-upaep-red transition-colors" data-target="mentors">
+                    <i class="fas fa-users text-base mb-0.5"></i>
+                    <span class="text-[10px] font-semibold leading-tight">Guías</span>
+                </button>
+                
+                <!-- Botón central Simulador Destacado -->
+                <button onclick="navigate('simulator')" class="mobile-nav-btn relative flex flex-col items-center justify-center py-1 group" data-target="simulator">
+                    <div class=" -mt-6 w-11 h-11 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg border-4 border-[#F8FAFC] group-hover:bg-blue-600 transition-colors simulator-icon-bg">
+                        <i class="fas fa-exchange-alt text-sm"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold text-gray-500 mt-0.5 leading-tight group-hover:text-blue-600 transition-colors simulator-text">Simulador</span>
+                </button>
+
+                <button onclick="navigate('resources')" class="mobile-nav-btn flex flex-col items-center justify-center py-1 text-gray-500 hover:text-upaep-red transition-colors" data-target="resources">
+                    <i class="fas fa-photo-video text-base mb-0.5"></i>
+                    <span class="text-[10px] font-semibold leading-tight">Recursos</span>
+                </button>
+                <button onclick="navigate('messages')" class="mobile-nav-btn flex flex-col items-center justify-center py-1 text-gray-500 hover:text-upaep-red transition-colors relative" data-target="messages">
+                    <div class="relative">
+                        <i class="fas fa-comment-dots text-base mb-0.5"></i>
+                        <span class="absolute -top-0.5 -right-1.5 w-2 h-2 bg-upaep-red rounded-full border border-white"></span>
+                    </div>
+                    <span class="text-[10px] font-semibold leading-tight">Chat</span>
+                </button>
+                <button onclick="navigate('info')" class="mobile-nav-btn flex flex-col items-center justify-center py-1 text-gray-500 hover:text-upaep-red transition-colors" data-target="info">
+                    <i class="fas fa-info-circle text-base mb-0.5"></i>
+                    <span class="text-[10px] font-semibold leading-tight">Info</span>
+                </button>
+            </div>
+        </div>
+
+        <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12" id="app-content">
+            <!-- Content gets injected here via JS -->
+        </main>
+    </div>
+
+    <!-- Modal: Termómetro Semanal (Con scroll seguro para móviles) -->
+    <div id="thermometer-modal" class="fixed inset-0 glass-modal z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-[2.5rem] shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeThermometer()" aria-label="Cerrar evaluación" class=" absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition z-10">
                 <i class="fas fa-times"></i>
             </button>
-            <div id="thermo-content" class="p-8 sm:p-10 relative">
+            <div id="thermo-content" class="p-6 sm:p-10 relative">
                 <!-- Inyectado vía JS para reiniciar estado -->
             </div>
         </div>
     </div>
 
-    <!-- Modal: Lector de Artículos -->
+    <!-- Modal: Lector de Artículos (Lectura optimizada en móvil y PC) -->
     <div id="article-modal" class="fixed inset-0 glass-modal z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white w-full sm:max-w-2xl sm:rounded-3xl rounded-t-3xl h-[85vh] sm:h-[80vh] flex flex-col shadow-2xl mx-0 sm:mx-4 transform translate-y-full sm:translate-y-8 transition-transform duration-300" id="article-container">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-white/95 backdrop-blur sticky top-0 z-10 sm:rounded-t-3xl rounded-t-3xl">
-                <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2"><i class="fas fa-book-open text-upaep-red"></i> Lectura</h3>
-                <button onclick="closeArticle()" class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full transition">
+        <div class="bg-white w-full sm:max-w-2xl sm:rounded-3xl rounded-t-3xl h-[88vh] sm:h-[82vh] flex flex-col shadow-2xl mx-0 sm:mx-4 transform translate-y-full sm:translate-y-8 transition-transform duration-300" id="article-container">
+            <div class="flex justify-between items-center px-5 py-4 sm:p-6 border-b border-gray-100 bg-white/95 backdrop-blur sticky top-0 z-10 rounded-t-3xl">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg flex items-center gap-2"><i class="fas fa-book-open text-upaep-red"></i> Lectura Recomendada</h3>
+                <button onclick="closeArticle()" aria-label="Cerrar lectura" class="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full transition">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="p-6 sm:p-10 overflow-y-auto hide-scroll flex-grow" id="article-body">
+            <div class="p-5 sm:p-10 overflow-y-auto flex-grow text-base sm:text-lg leading-relaxed" id="article-body">
                 <!-- Contenido del artículo -->
             </div>
         </div>
     </div>
 
     <!-- Modal: Simulador de Video Cine -->
-    <div id="video-modal" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <button onclick="closeVideo()" class="absolute top-6 right-6 sm:top-10 sm:right-10 w-12 h-12 flex items-center justify-center bg-white/10 text-white hover:bg-white/20 rounded-full transition text-xl">
+    <div id="video-modal" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <button onclick="closeVideo()" aria-label="Cerrar video" class="absolute top-5 right-5 sm:top-8 sm:right-8 w-11 h-11 flex items-center justify-center bg-white/10 text-white hover:bg-white/20 rounded-full transition text-xl z-20">
             <i class="fas fa-times"></i>
         </button>
-        <div class="w-full max-w-5xl aspect-video bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+        <div class="w-full max-w-4xl aspect-video bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-5 sm:p-8">
                 <div class="text-white">
-                    <span class="bg-upaep-red text-xs font-bold px-3 py-1 rounded-md uppercase tracking-wide mb-3 inline-block">Reproduciendo</span>
-                    <h2 id="video-title" class="text-2xl sm:text-4xl font-bold">Título del Video</h2>
+                    <span class="bg-upaep-red text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide mb-2 inline-block">Reproduciendo</span>
+                    <h2 id="video-title" class="text-lg sm:text-3xl font-bold">Título del Video</h2>
                 </div>
             </div>
-            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform">
-                <i class="fas fa-play text-white text-3xl ml-2"></i>
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform">
+                <i class="fas fa-play text-white text-2xl sm:text-3xl ml-1"></i>
             </div>
         </div>
     </div>
 
-    <!-- Contenedor Toasts -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+    <!-- Contenedor Toasts (Adaptado para no tapar la barra móvil) -->
+    <div id="toast-container" class="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
 
     <script>
+        // ==========================================
+        // CONTROL DE TRANSICIÓN LANDING <-> APP
+        // ==========================================
+        function toggleLandingMenu() {
+            const menu = document.getElementById('landing-mobile-menu');
+            const icon = document.getElementById('landing-menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        function enterApp(initialView = 'home') {
+            document.getElementById('landing-page').classList.add('hidden');
+            const app = document.getElementById('platform-app');
+            app.classList.remove('hidden');
+            app.classList.add('flex');
+            navigate(initialView);
+        }
+
+        function showLandingPage() {
+            const app = document.getElementById('platform-app');
+            app.classList.add('hidden');
+            app.classList.remove('flex');
+            document.getElementById('landing-page').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         // ==========================================
         // BASE DE DATOS SIMULADA
         // ==========================================
@@ -258,35 +688,35 @@
                 title: 'El mito de "perder el tiempo" al cambiar de carrera',
                 tag: 'Mitos',
                 readTime: '4 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">¿Sientes que tiraste años a la basura?</h2><p class="text-gray-700 leading-relaxed mb-4">Es una de las preocupaciones más comunes entre los universitarios. Pensar que si te cambias de carrera en el cuarto semestre has "perdido" dos años de tu vida.</p><p class="text-gray-700 leading-relaxed mb-4">La realidad es que el conocimiento es acumulativo. Las habilidades que aprendiste (organización, análisis, trabajo bajo presión) te acompañarán. Además, el tronco común suele salvar muchos de tus créditos.</p><p class="text-gray-700 leading-relaxed"><strong>Recuerda:</strong> Es mejor perder unos semestres, que pasar 40 años ejerciendo una profesión que te hace infeliz.</p>'
+                content: '<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">¿Sientes que tiraste años a la basura?</h2><p class="text-gray-700 leading-relaxed mb-4">Es una de las preocupaciones más comunes entre los universitarios. Pensar que si te cambias de carrera en el cuarto semestre has "perdido" dos años de tu vida.</p><p class="text-gray-700 leading-relaxed mb-4">La realidad es que el conocimiento es acumulativo. Las habilidades que aprendiste (organización, análisis, trabajo bajo presión) te acompañarán. Además, el tronco común suele salvar muchos de tus créditos.</p><p class="text-gray-700 leading-relaxed"><strong>Recuerda:</strong> Es mejor perder unos semestres, que pasar 40 años ejerciendo una profesión que te hace infeliz.</p>'
             },
             {
                 id: 2,
                 title: '¿Cómo hablar con mis papás sobre mi cambio de carrera?',
                 tag: 'Familia',
                 readTime: '6 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El momento temido</h2><p class="text-gray-700 leading-relaxed mb-4">Abordar el tema con la familia puede generar muchísima ansiedad, especialmente si ellos están financiando tus estudios o si provienes de una "familia de abogados" o médicos.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Pasos para la conversación:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Prepárate con datos:</strong> No llegues solo con un "ya no me gusta". Presenta un plan: "Investigué esta otra carrera, puedo revalidar estas materias, el campo laboral es este".</li><li><strong>Elige el momento adecuado:</strong> Evita sacar el tema durante una discusión o cuando estén estresados.</li><li><strong>Asume su reacción:</strong> Es normal que al principio sientan miedo o decepción. Dales tiempo para procesarlo.</li><li><strong>Busca aliados:</strong> Si cuentas con un orientador psicopedagógico en tu universidad, puedes pedirle que medie en una cita con tus padres.</li></ul>'
+                content: '<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">El momento temido</h2><p class="text-gray-700 leading-relaxed mb-4">Abordar el tema con la familia puede generar muchísima ansiedad, especialmente si ellos están financiando tus estudios o si provienes de una "familia de abogados" o médicos.</p><h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Pasos para la conversación:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2.5 mb-6"><li><strong>Prepárate con datos:</strong> No llegues solo con un "ya no me gusta". Presenta un plan: "Investigué esta otra carrera, puedo revalidar estas materias, el campo laboral es este".</li><li><strong>Elige el momento adecuado:</strong> Evita sacar el tema durante una discusión o cuando estén estresados.</li><li><strong>Asume su reacción:</strong> Es normal que al principio sientan miedo o decepción. Dales tiempo para procesarlo.</li><li><strong>Busca aliados:</strong> Si cuentas con un orientador psicopedagógico en tu universidad, puedes pedirle que medie en una cita con tus padres.</li></ul>'
             },
             {
                 id: 3,
                 title: 'Señales de que estás en la carrera indicada',
                 tag: 'Vocación',
                 readTime: '5 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">¿Cómo saber si tomaste la decisión correcta?</h2><p class="text-gray-700 leading-relaxed mb-4">Es completamente normal tener dudas durante la carrera universitaria, pero existen pequeños indicadores que confirman que estás en el camino correcto para tu futuro.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Señales clave a tomar en cuenta:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Curiosidad genuina:</strong> Te descubres investigando temas de la clase más allá de lo que pide el temario.</li><li><strong>Fluidez en los retos:</strong> Las tareas pesadas o los proyectos largos no se sienten como un castigo insoportable, sino como un reto a superar.</li><li><strong>Proyección futura:</strong> Te emociona imaginarte trabajando en la industria o ejerciendo la profesión en la vida real.</li><li><strong>Identidad:</strong> Te identificas con los valores y la visión del mundo de tus profesores y compañeros apasionados por el tema.</li></ul>'
+                content: '<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">¿Cómo saber si tomaste la decisión correcta?</h2><p class="text-gray-700 leading-relaxed mb-4">Es completamente normal tener dudas durante la carrera universitaria, pero existen pequeños indicadores que confirman que estás en el camino correcto para tu futuro.</p><h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Señales clave a tomar en cuenta:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2.5 mb-6"><li><strong>Curiosidad genuina:</strong> Te descubres investigando temas de la clase más allá de lo que pide el temario.</li><li><strong>Fluidez en los retos:</strong> Las tareas pesadas o los proyectos largos no se sienten como un castigo insoportable, sino como un reto a superar.</li><li><strong>Proyección futura:</strong> Te emociona imaginarte trabajando en la industria o ejerciendo la profesión en la vida real.</li><li><strong>Identidad:</strong> Te identificas con los valores y la visión del mundo de tus profesores y compañeros apasionados por el tema.</li></ul>'
             },
             {
                 id: 4,
                 title: 'Ansiedad por las calificaciones: Cuando un número dicta tu valor',
                 tag: 'Salud Mental',
                 readTime: '5 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">Más que un promedio</h2><p class="text-gray-700 leading-relaxed mb-4">En el entorno universitario competitivo, es fácil caer en la trampa de medir nuestro valor personal a través del Kardex. Una mala nota puede sentirse como un fracaso total.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">Estrategias para desapegarte de la nota:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Reconoce el esfuerzo, no solo el resultado:</strong> Celebra las horas de estudio y la disciplina, independientemente de lo que diga el examen.</li><li><strong>Identifica tus otras fortalezas:</strong> El liderazgo, la empatía y la creatividad raramente se reflejan en un examen de opción múltiple.</li><li><strong>Busca ayuda oportuna:</strong> Si la ansiedad te paraliza, los asesores psicopedagógicos están para darte herramientas de manejo de estrés.</li></ul>'
+                content: '<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Más que un promedio</h2><p class="text-gray-700 leading-relaxed mb-4">En el entorno universitario competitivo, es fácil caer en la trampa de medir nuestro valor personal a través del Kardex. Una mala nota puede sentirse como un fracaso total.</p><h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Estrategias para desapegarte de la nota:</h3><ul class="list-disc pl-5 text-gray-700 space-y-2.5 mb-6"><li><strong>Reconoce el esfuerzo, no solo el resultado:</strong> Celebra las horas de estudio y la disciplina, independientemente de lo que diga el examen.</li><li><strong>Identifica tus otras fortalezas:</strong> El liderazgo, la empatía y la creatividad raramente se reflejan en un examen de opción múltiple.</li><li><strong>Busca ayuda oportuna:</strong> Si la ansiedad te paraliza, los asesores psicopedagógicos están para darte herramientas de manejo de estrés.</li></ul>'
             },
             {
                 id: 5,
                 title: 'Síndrome del impostor: ¿Por qué siento que no pertenezco aquí?',
                 tag: 'Psicología',
                 readTime: '7 min',
-                content: '<h2 class="text-2xl font-bold text-gray-900 mb-4">El miedo a ser "descubierto"</h2><p class="text-gray-700 leading-relaxed mb-4">Llegas a clase, ves a tus compañeros participando fluidamente y piensas: "Todos aquí son más inteligentes que yo, en cualquier momento se darán cuenta de que fue un error admitirme". Esto es el Síndrome del Impostor.</p><h3 class="text-xl font-bold text-gray-900 mb-2 mt-6">¿Cómo combatirlo?</h3><ul class="list-disc pl-5 text-gray-700 space-y-2 mb-6"><li><strong>Habla del tema:</strong> Te sorprendería saber cuántos de tus compañeros (¡y profesores!) sienten exactamente lo mismo.</li><li><strong>Documenta tus logros:</strong> Guarda correos de felicitación, buenas notas y proyectos de lo que te sientas orgulloso. Léelos cuando dudes de ti.</li><li><strong>Acepta que estás aprendiendo:</strong> Estás en la universidad para aprender, no para saberlo todo desde el primer semestre. El error es parte del método.</li></ul>'
+                content: '<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">El miedo a ser "descubierto"</h2><p class="text-gray-700 leading-relaxed mb-4">Llegas a clase, ves a tus compañeros participando fluidamente y piensas: "Todos aquí son más inteligentes que yo, en cualquier momento se darán cuenta de que fue un error admitirme". Esto es el Síndrome del Impostor.</p><h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">¿Cómo combatirlo?</h3><ul class="list-disc pl-5 text-gray-700 space-y-2.5 mb-6"><li><strong>Habla del tema:</strong> Te sorprendería saber cuántos de tus compañeros (¡y profesores!) sienten exactamente lo mismo.</li><li><strong>Documenta tus logros:</strong> Guarda correos de felicitación, buenas notas y proyectos de lo que te sientas orgulloso. Léelos cuando dudes de ti.</li><li><strong>Acepta que estás aprendiendo:</strong> Estás en la universidad para aprender, no para saberlo todo desde el primer semestre. El error es parte del método.</li></ul>'
             },
             {
                 id: 6,
@@ -294,59 +724,59 @@
                 tag: 'Vocación',
                 readTime: '3 min',
                 content: `
-                    <div class="text-center mb-8">
-                        <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-brain text-3xl text-orange-500"></i>
+                    <div class="text-center mb-6 sm:mb-8">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-brain text-2xl sm:text-3xl text-orange-500"></i>
                         </div>
-                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Diferenciando el cansancio del desinterés</h2>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Diferenciando el cansancio del desinterés</h2>
                     </div>
-                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-3xl mx-auto">La transición del ciclo diversificado (preparatoria) a la educación superior genera un fuerte impacto psicológico natural. Es completamente normal sentirse abrumado o cuestionarse las decisiones durante los primeros semestres. Pero, ¿cómo saber si es solo carga de trabajo o incongruencia vocacional?</p>
+                    <p class="text-gray-700 leading-relaxed mb-6 sm:mb-8 text-left sm:text-center max-w-3xl mx-auto">La transición de la preparatoria a la educación superior genera un fuerte impacto psicológico natural. Es completamente normal sentirse abrumado o cuestionarse las decisiones durante los primeros semestres. Pero, ¿cómo saber si es solo carga de trabajo o incongruencia vocacional?</p>
                     
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-6 sm:mb-8">
+                        <div class="bg-gray-50 rounded-2xl p-5 sm:p-6 border border-gray-100">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2 text-base sm:text-lg">
                                 <i class="fas fa-battery-half text-yellow-500"></i> Señales de Estrés Adaptativo
                             </h3>
-                            <ul class="space-y-4 text-gray-700 text-sm">
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                            <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span>Te preocupan mucho las fechas de exámenes y entregas.</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span>Sientes que el tiempo libre ha desaparecido de tu rutina.</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span><strong>Clave:</strong> Cuando finalmente entiendes el tema o terminas el proyecto, sientes satisfacción y el tema central de la carrera te sigue pareciendo fascinante.</span>
                                 </li>
                             </ul>
                         </div>
                         
-                        <div class="bg-red-50/50 rounded-2xl p-6 border border-red-100">
-                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <div class="bg-red-50/50 rounded-2xl p-5 sm:p-6 border border-red-100">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2 text-base sm:text-lg">
                                 <i class="fas fa-directions text-red-500"></i> Señales de Incongruencia Vocacional
                             </h3>
-                            <ul class="space-y-4 text-gray-700 text-sm">
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                            <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span>Te aburre profundamente la materia principal, incluso si es fácil de aprobar.</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span>No logras visualizarte trabajando felizmente en ese sector a futuro.</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
+                                <li class="flex items-start gap-2.5">
+                                    <span class="mt-2 w-1.5 h-1.5 bg-gray-400 rounded-full shrink-0"></span>
                                     <span><strong>Clave:</strong> Sientes un alivio intenso y desproporcionado cuando se cancela una clase nuclear de tu carrera.</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <p class="text-gray-700 leading-relaxed mb-4">Si te identificas claramente con el segundo grupo (Incongruencia), te recomendamos encarecidamente utilizar nuestra herramienta de <strong>Test Vocacional Express</strong> en tu perfil para comenzar a mapear alternativas.</p>
-                        <button onclick="closeArticle(); navigate('vocational'); startVocationalTest()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-upaep-red transition-colors text-sm shadow-md">
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                        <p class="text-gray-700 text-sm sm:text-base leading-relaxed mb-4">Si te identificas claramente con el segundo grupo (Incongruencia), te recomendamos utilizar nuestra herramienta de <strong>Test Vocacional Exploratorio</strong> para comenzar a mapear alternativas.</p>
+                        <button onclick="closeArticle(); navigate('vocational'); startVocationalTest()" class="w-full sm:w-auto bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-upaep-red transition-colors text-sm shadow-md">
                             Ir al Test Vocacional
                         </button>
                     </div>
@@ -361,66 +791,66 @@
             // INICIO
             home: `
                 <div class="slide-up">
-                    <header class="mb-12">
-                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Hola, <span class="text-upaep-red">Estudiante</span> 👋</h1>
-                        <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">Bienvenido a tu espacio seguro en la universidad. Aquí puedes explorar tu verdadera vocación, resolver dudas académicas y encontrar apoyo en tu camino universitario.</p>
+                    <header class="mb-8 sm:mb-12">
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4 tracking-tight">Hola, <span class="text-upaep-red">Estudiante</span> 👋</h1>
+                        <p class="text-base sm:text-lg text-gray-600 max-w-2xl leading-relaxed">Bienvenido a tu espacio seguro en la universidad. Aquí puedes explorar tu verdadera vocación, resolver dudas académicas y encontrar apoyo en tu camino universitario.</p>
                     </header>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-10 sm:mb-12">
                         <!-- Termómetro Emocional -->
-                        <div class="lg:col-span-2 bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-8 group">
+                        <div class="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 group">
                             <div class="relative shrink-0">
-                                <div class="w-32 h-32 rounded-full border-[6px] border-gray-50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-[6px] border-gray-50 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                                     <div class="absolute inset-0 bg-gradient-to-t from-upaep-red/20 to-transparent"></div>
-                                    <i class="fas fa-heartbeat text-5xl text-upaep-red relative z-10 pulse-soft"></i>
+                                    <i class="fas fa-heartbeat text-4xl sm:text-5xl text-upaep-red relative z-10 pulse-soft"></i>
                                 </div>
                             </div>
                             <div class="text-center sm:text-left flex-grow">
-                                <span class="bg-red-50 text-upaep-red text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Ritual Semanal</span>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3">Tu check-in semanal</h3>
-                                <p class="text-gray-500 mb-6 leading-relaxed">Tómate 2 minutos para reflexionar sobre tu semana. Identificar cómo te sientes es el primer paso para mejorar tu experiencia universitaria.</p>
-                                <button onclick="openThermometer()" class="bg-gray-900 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-upaep-red transition-colors shadow-lg shadow-gray-900/20 inline-flex items-center gap-3">
+                                <span class="bg-red-50 text-upaep-red text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Ritual Semanal</span>
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Tu check-in semanal</h3>
+                                <p class="text-sm sm:text-base text-gray-600 mb-6 leading-relaxed">Tómate 2 minutos para reflexionar sobre tu semana. Identificar cómo te sientes es el primer paso para mejorar tu experiencia universitaria.</p>
+                                <button onclick="openThermometer()" class="w-full sm:w-auto bg-gray-900 text-white px-7 py-3.5 rounded-xl font-bold hover:bg-upaep-red transition-colors shadow-lg shadow-gray-900/20 inline-flex items-center justify-center gap-3 text-sm sm:text-base">
                                     Comenzar evaluación <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Banner Promocional Test Vocacional -->
-                        <div onclick="navigate('vocational'); startVocationalTest()" class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl shadow-sm border border-purple-100 p-8 cursor-pointer hover:shadow-lg hover:border-purple-300 transition group flex flex-col justify-center items-center text-center">
-                            <div class="w-20 h-20 rounded-2xl bg-white text-purple-600 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-sm">
+                        <div onclick="navigate('vocational'); startVocationalTest()" class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl shadow-sm border border-purple-100 p-6 sm:p-8 cursor-pointer hover:shadow-lg hover:border-purple-300 transition group flex flex-col justify-center items-center text-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white text-purple-600 flex items-center justify-center text-3xl sm:text-4xl mb-4 sm:mb-6 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-sm">
                                 <i class="fas fa-compass"></i>
                             </div>
-                            <h4 class="font-bold text-xl text-purple-900 mb-3">¿Dudas de tu carrera?</h4>
-                            <p class="text-sm text-purple-800/80 leading-relaxed mb-6">Realiza nuestro Test Vocacional Exploratorio y descubre qué áreas se adaptan mejor a ti.</p>
+                            <h4 class="font-bold text-lg sm:text-xl text-purple-900 mb-2 sm:mb-3">¿Dudas de tu carrera?</h4>
+                            <p class="text-sm sm:text-base text-purple-800/80 leading-relaxed mb-5 sm:mb-6">Realiza nuestro Test Vocacional Exploratorio y descubre qué áreas se adaptan mejor a ti.</p>
                             <span class="text-purple-600 font-bold text-sm group-hover:underline">Comenzar Test &rarr;</span>
                         </div>
                     </div>
 
                     <!-- Recomendaciones -->
                     <div>
-                        <div class="flex items-center justify-between mb-8">
-                            <h2 class="text-2xl font-bold text-gray-900">Para ti hoy</h2>
+                        <div class="flex items-center justify-between mb-6 sm:mb-8">
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Para ti hoy</h2>
                             <button onclick="navigate('resources')" class="text-upaep-red font-semibold hover:underline text-sm">Ver todo</button>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                             <!-- Artículo Destacado -->
-                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group">
-                                <div class="flex items-center gap-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group">
+                                <div class="flex items-center gap-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 sm:mb-4">
                                     <i class="fas fa-file-alt text-upaep-red"></i> Lectura · 4 min
                                 </div>
-                                <h4 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-upaep-red transition-colors">El mito de "perder el tiempo" al cambiar de carrera</h4>
-                                <p class="text-gray-500 line-clamp-2 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu futuro profesional y salud mental.</p>
+                                <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-upaep-red transition-colors">El mito de "perder el tiempo" al cambiar de carrera</h4>
+                                <p class="text-sm sm:text-base text-gray-600 line-clamp-2 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu futuro profesional y salud mental.</p>
                             </div>
                             
                             <!-- Video Destacado -->
-                            <div onclick="openVideo('Un Día en: Ingeniería Industrial')" class="bg-gray-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer transition group relative h-[200px]">
+                            <div onclick="openVideo('Un Día en: Ingeniería Industrial')" class="bg-gray-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer transition group relative min-h-[190px] sm:h-[200px]">
                                 <img src="https://placehold.co/600x300/1A1A1A/666666?text=Video" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity" alt="Video">
-                                <div class="absolute inset-0 p-8 flex flex-col justify-end">
-                                    <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
+                                    <div class="w-11 h-11 sm:w-12 sm:h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                                         <i class="fas fa-play text-white ml-1"></i>
                                     </div>
-                                    <h4 class="text-xl font-bold text-white mb-1">Un Día en: Ingeniería Industrial</h4>
-                                    <p class="text-gray-300 text-sm">Conoce la realidad de la carrera.</p>
+                                    <h4 class="text-lg sm:text-xl font-bold text-white mb-1">Un Día en: Ingeniería Industrial</h4>
+                                    <p class="text-gray-300 text-xs sm:text-sm">Conoce la realidad de la carrera.</p>
                                 </div>
                             </div>
                         </div>
@@ -431,44 +861,44 @@
             // MENTORES (ESTUDIANTES GUÍA)
             mentors: `
                 <div class="slide-up">
-                    <div class="mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-users text-upaep-red mr-3"></i>Estudiantes Guía</h2>
-                        <p class="text-gray-500 max-w-2xl text-lg leading-relaxed">Conecta con estudiantes de semestres avanzados que ya pasaron por lo mismo que tú. Ellos están listos para escucharte, orientarte y compartir su experiencia.</p>
+                    <div class="mb-8 sm:mb-12">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4"><i class="fas fa-users text-upaep-red mr-2.5"></i>Directorio de Guías, Pares y Expertos</h2>
+                        <p class="text-gray-600 max-w-3xl text-base sm:text-lg leading-relaxed">Conecta con estudiantes de semestres avanzados que ya pasaron por procesos similares, asesores y especialistas bajo un modelo de comunicación <strong>Two-Step Flow</strong>.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         <!-- Mentor 1 -->
-                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-blue-600"></div>
-                            <img src="https://placehold.co/120x120/bfdbfe/2563eb?text=M" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <img src="https://placehold.co/120x120/bfdbfe/2563eb?text=M" alt="Mentor" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-5 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
                             <h3 class="font-bold text-xl text-gray-900 mb-1">Mateo Ruiz</h3>
-                            <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Ingeniería Industrial (7mo)</span>
-                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Me cambié de Mecatrónica a Industrial en 3er semestre. Conozco el proceso de revalidación a fondo, ¡escríbeme!"</p>
-                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Estudiante Guía · Ing. Industrial (7mo)</span>
+                            <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 flex-grow leading-relaxed">"Me cambié de Mecatrónica a Industrial en 3er semestre. Conozco el proceso de revalidación a fondo, ¡escríbeme!"</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
                                 <i class="fas fa-comment-dots"></i> Enviar Mensaje
                             </button>
                         </div>
                         
                         <!-- Mentor 2 -->
-                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-400 to-pink-600"></div>
-                            <img src="https://placehold.co/120x120/fbcfe8/db2777?text=S" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <img src="https://placehold.co/120x120/fbcfe8/db2777?text=S" alt="Mentor" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-5 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
                             <h3 class="font-bold text-xl text-gray-900 mb-1">Sofía Mendieta</h3>
-                            <span class="bg-pink-50 text-pink-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Psicología (8vo)</span>
-                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Si sientes mucha ansiedad académica o presión familiar por tus estudios, me encantaría escucharte."</p>
-                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <span class="bg-pink-50 text-pink-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Experta Par · Psicología (8vo)</span>
+                            <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 flex-grow leading-relaxed">"Si sientes mucha ansiedad académica o presión familiar por tus estudios, me encantaría escucharte y orientarte."</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
                                 <i class="fas fa-comment-dots"></i> Enviar Mensaje
                             </button>
                         </div>
 
                         <!-- Mentor 3 -->
-                        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
-                            <img src="https://placehold.co/120x120/c7d2fe/4f46e5?text=D" alt="Mentor" class="w-24 h-24 rounded-full mb-6 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                            <img src="https://placehold.co/120x120/c7d2fe/4f46e5?text=D" alt="Mentor" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-5 border-4 border-white shadow-md group-hover:scale-105 transition-transform">
                             <h3 class="font-bold text-xl text-gray-900 mb-1">Diego Torres</h3>
-                            <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Arquitectura (6to)</span>
-                            <p class="text-sm text-gray-500 mb-8 flex-grow leading-relaxed">"Te ayudo a organizar tus tiempos y a saber cómo lidiar con las semanas de entregas pesadas."</p>
-                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1 rounded-full mb-4">Estudiante Guía · Arquitectura (6to)</span>
+                            <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 flex-grow leading-relaxed">"Te ayudo a organizar tus tiempos y a saber cómo lidiar con las semanas de entregas pesadas."</p>
+                            <button onclick="navigate('messages')" class="w-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
                                 <i class="fas fa-comment-dots"></i> Enviar Mensaje
                             </button>
                         </div>
@@ -479,20 +909,20 @@
             // RECURSOS (Hub Multimedia)
             resources: `
                 <div class="slide-up">
-                    <div class="mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-photo-video text-upaep-red mr-3"></i>Hub de Contención y Exploración</h2>
-                        <p class="text-gray-500 max-w-3xl text-lg leading-relaxed">Descubre cápsulas visuales, podcasts y artículos diseñados para ayudarte a manejar la presión y explorar tu vocación.</p>
+                    <div class="mb-8 sm:mb-12">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4"><i class="fas fa-photo-video text-upaep-red mr-2.5"></i>Hub de Contención y Exploración</h2>
+                        <p class="text-gray-600 max-w-3xl text-base sm:text-lg leading-relaxed">Descubre cápsulas visuales, podcasts y artículos diseñados para ayudarte a manejar la presión y explorar tu vocación.</p>
                     </div>
 
                     <!-- Cápsulas en Video -->
-                    <div class="mb-16">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                    <div class="mb-12 sm:mb-16">
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 flex items-center gap-2">
                             <i class="fas fa-play-circle text-gray-400"></i> Cápsulas: Un Día en la Vida
                         </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                             <div onclick="openVideo('Un Día en Arquitectura')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
-                                <div class="relative h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Arquitectura" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                <div class="relative h-44 sm:h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Arquitectura" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Arquitectura">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -500,15 +930,15 @@
                                     </div>
                                     <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">05:24</span>
                                 </div>
-                                <div class="p-6 flex flex-col flex-grow">
+                                <div class="p-5 sm:p-6 flex flex-col flex-grow">
                                     <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">La realidad de estudiar Arquitectura</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Acompaña a Diego en semana de maquetas y descubre si el diseño de espacios es para ti.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed mt-auto">Acompaña a Diego en semana de maquetas y descubre si el diseño de espacios es para ti.</p>
                                 </div>
                             </div>
                             
                             <div onclick="openVideo('Un Día en Psicología')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
-                                <div class="relative h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Psicologia" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                <div class="relative h-44 sm:h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Psicologia" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Psicología">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -516,15 +946,15 @@
                                     </div>
                                     <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">07:15</span>
                                 </div>
-                                <div class="p-6 flex flex-col flex-grow">
+                                <div class="p-5 sm:p-6 flex flex-col flex-grow">
                                     <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Intervención y comportamiento</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Conoce cómo se ven las prácticas clínicas y qué se siente estar del otro lado de la escucha.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed mt-auto">Conoce cómo se ven las prácticas clínicas y qué se siente estar del otro lado de la escucha.</p>
                                 </div>
                             </div>
 
                             <div onclick="openVideo('Un Día en Ing. Industrial')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
-                                <div class="relative h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Industrial" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                                <div class="relative h-44 sm:h-48 bg-gray-900">
+                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Industrial" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Industrial">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -532,117 +962,111 @@
                                     </div>
                                     <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">06:40</span>
                                 </div>
-                                <div class="p-6 flex flex-col flex-grow">
+                                <div class="p-5 sm:p-6 flex flex-col flex-grow">
                                     <h4 class="font-bold text-lg text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Plantas, procesos y manufactura</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed mt-auto">Un recorrido por laboratorios para entender de qué se trata la optimización industrial.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed mt-auto">Un recorrido por laboratorios para entender de qué se trata la optimización industrial.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Podcasts de Afrontamiento -->
-                    <div class="mb-16 bg-gray-900 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                    <div class="mb-12 sm:mb-16 bg-gray-900 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                        <h3 class="text-2xl font-bold text-white mb-8 relative z-10 flex items-center gap-3">
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8 relative z-10 flex items-center gap-3">
                             <i class="fas fa-podcast text-upaep-red"></i> Podcasts de Afrontamiento
                         </h3>
                         
                         <div class="space-y-4 relative z-10">
                             <!-- Track 1 -->
-                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: Manejando la ansiedad académica...')">
-                                <div class="w-12 h-12 rounded-full bg-upaep-red text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex items-center gap-4 sm:gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: Manejando la ansiedad académica...')">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-upaep-red text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-play ml-1"></i>
                                 </div>
-                                <div class="flex-grow text-center sm:text-left">
-                                    <h4 class="text-white font-bold text-lg">Manejando la ansiedad en semanas de exámenes</h4>
-                                    <p class="text-gray-400 text-sm">Con la Dra. Elena Ríos · Orientación Psicopedagógica</p>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="text-white font-bold text-base sm:text-lg leading-snug">Manejando la ansiedad en semanas de exámenes</h4>
+                                    <p class="text-gray-300 text-xs sm:text-sm mt-0.5">Con la Dra. Elena Ríos · Orientación Psicopedagógica</p>
                                 </div>
-                                <div class="text-gray-500 hidden sm:flex items-center gap-1 opacity-60">
-                                    <div class="w-1 h-3 bg-gray-400 rounded-full animate-bounce"></div>
-                                    <div class="w-1 h-5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                                    <div class="w-1 h-4 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                                    <div class="w-1 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
-                                </div>
-                                <span class="text-gray-400 text-sm font-medium">12:45</span>
+                                <span class="text-gray-300 text-xs sm:text-sm font-medium shrink-0">12:45</span>
                             </div>
 
                             <!-- Track 2 -->
-                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: El peso de las expectativas...')">
-                                <div class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform group-hover:bg-upaep-red">
+                            <div class="bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur rounded-2xl p-4 sm:p-5 flex items-center gap-4 sm:gap-5 transition-colors cursor-pointer group" onclick="showToast('Reproduciendo podcast: El peso de las expectativas...')">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform group-hover:bg-upaep-red">
                                     <i class="fas fa-play ml-1"></i>
                                 </div>
-                                <div class="flex-grow text-center sm:text-left">
-                                    <h4 class="text-white font-bold text-lg">El peso de las expectativas familiares</h4>
-                                    <p class="text-gray-400 text-sm">Episodio 2 · Charla con estudiantes</p>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="text-white font-bold text-base sm:text-lg leading-snug">El peso de las expectativas familiares</h4>
+                                    <p class="text-gray-300 text-xs sm:text-sm mt-0.5">Episodio 2 · Charla con estudiantes</p>
                                 </div>
-                                <span class="text-gray-400 text-sm font-medium">15:20</span>
+                                <span class="text-gray-300 text-xs sm:text-sm font-medium shrink-0">15:20</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Lecturas -->
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 flex items-center gap-2">
                             <i class="fas fa-book text-gray-400"></i> Lecturas Recomendadas
                         </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                             <div onclick="openArticle(6)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                             <div onclick="openArticle(6)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-brain"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">¿Estrés o Falta de Vocación?</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">Aprende a diferenciar el cansancio normal por la carga de trabajo de una verdadera incongruencia vocacional.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Aprende a diferenciar el cansancio normal por la carga de trabajo de una verdadera incongruencia vocacional.</p>
                                 </div>
                             </div>
                             
-                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                            <div onclick="openArticle(1)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">El mito de "perder el tiempo" al cambiar de carrera</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu salud mental.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Descubre por qué pivotar a tiempo puede ser la mejor decisión para tu salud mental.</p>
                                 </div>
                             </div>
 
-                            <div onclick="openArticle(2)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                            <div onclick="openArticle(2)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-comments"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">¿Cómo hablar con mis papás?</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">Pasos y consejos prácticos para comunicarles que deseas cambiar de carrera escolar.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Pasos y consejos prácticos para comunicarles que deseas cambiar de carrera escolar.</p>
                                 </div>
                             </div>
 
-                            <div onclick="openArticle(3)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                            <div onclick="openArticle(3)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Señales de que estás en la carrera indicada</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">Identifica los detalles que confirman que tomaste la decisión académica correcta.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Identifica los detalles que confirman que tomaste la decisión académica correcta.</p>
                                 </div>
                             </div>
 
-                            <div onclick="openArticle(4)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                            <div onclick="openArticle(4)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-heart-broken"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Ansiedad por las calificaciones</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">Estrategias para desapegarte de la nota y cuidar de tu salud mental en época de exámenes.</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Estrategias para desapegarte de la nota y cuidar de tu salud mental en época de exámenes.</p>
                                 </div>
                             </div>
 
-                            <div onclick="openArticle(5)" class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+                            <div onclick="openArticle(5)" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition group flex flex-col gap-4 sm:gap-5">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-user-secret"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-upaep-red transition-colors">Síndrome del impostor</h4>
-                                    <p class="text-sm text-gray-500 leading-relaxed">¿Sientes que no perteneces aquí? Descubre cómo combatir el miedo a ser "descubierto".</p>
+                                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">¿Sientes que no perteneces aquí? Descubre cómo combatir el miedo a ser "descubierto".</p>
                                 </div>
                             </div>
                         </div>
@@ -653,57 +1077,63 @@
             // SIMULADOR
             simulator: `
                 <div class="slide-up">
-                    <div class="mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-balance-scale text-upaep-red mr-3"></i>Simulador de Cambio de Carrera</h2>
-                        <p class="text-gray-500 max-w-3xl text-lg leading-relaxed">Compara tu carrera actual con la que te interesa. Descubre qué materias podrías revalidar (tronco común) y cómo se transformaría tu perfil profesional.</p>
+                    <div class="mb-8 sm:mb-12">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4"><i class="fas fa-balance-scale text-upaep-red mr-2.5"></i>Simulador de Cambio de Carrera</h2>
+                        <p class="text-gray-600 max-w-3xl text-base sm:text-lg leading-relaxed">Compara tu carrera actual con la que te interesa. Descubre qué materias podrías convalidar (tronco común) y cómo se transformaría tu perfil profesional.</p>
                     </div>
 
                     <!-- Banner Test Vocacional en Simulador -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-3xl p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-                        <div class="flex items-center gap-5">
+                    <div class="bg-blue-50 border border-blue-200 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12 flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 shadow-sm text-center md:text-left">
+                        <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
                             <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl shrink-0"><i class="fas fa-map-signs"></i></div>
                             <div>
-                                <h4 class="font-bold text-blue-900 text-xl mb-1">¿No sabes qué carrera comparar?</h4>
-                                <p class="text-blue-800/80">Descubre tus verdaderos intereses con nuestra herramienta exploratoria.</p>
+                                <h4 class="font-bold text-blue-900 text-lg sm:text-xl mb-1">¿No sabes qué carrera comparar?</h4>
+                                <p class="text-sm sm:text-base text-blue-800/80">Descubre tus verdaderos intereses con nuestra herramienta exploratoria.</p>
                             </div>
                         </div>
-                        <button onclick="navigate('vocational'); startVocationalTest()" class="w-full md:w-auto bg-blue-600 text-white font-bold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition shadow-md whitespace-nowrap shrink-0">
+                        <button onclick="navigate('vocational'); startVocationalTest()" class="w-full md:w-auto bg-blue-600 text-white font-bold py-3.5 px-7 rounded-xl hover:bg-blue-700 transition shadow-md whitespace-nowrap shrink-0 text-sm sm:text-base">
                             Hacer Test Vocacional
                         </button>
                     </div>
 
                     <!-- Controles del Simulador -->
-                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 mb-12 flex flex-col lg:flex-row gap-8 items-center justify-between relative overflow-hidden">
+                    <div class="bg-white p-6 sm:p-8 md:p-12 rounded-3xl sm:rounded-[2.5rem] shadow-sm border border-gray-100 mb-10 sm:mb-12 flex flex-col lg:flex-row gap-6 sm:gap-8 items-center justify-between relative overflow-hidden">
                         
                         <div class="w-full lg:w-2/5">
-                            <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Estudio actualmente:</label>
-                            <select id="sim-source" class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl px-5 py-4 font-semibold focus:outline-none focus:border-upaep-red focus:ring-2 focus:ring-red-100 transition-all appearance-none cursor-pointer">
-                                <option value="comunicacion">Comunicación y Medios Digitales</option>
-                                <option value="industrial">Ingeniería Industrial</option>
-                                <option value="administracion">Administración de Empresas</option>
-                                <option value="arquitectura">Arquitectura</option>
-                                <option value="psicologia">Psicología</option>
-                            </select>
+                            <label for="sim-source" class="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2.5">Estudio actualmente:</label>
+                            <div class="relative">
+                                <select id="sim-source" class="w-full bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl pl-4 pr-10 py-3.5 sm:py-4 text-sm sm:text-base font-semibold focus:outline-none focus:border-upaep-red focus:ring-2 focus:ring-red-100 transition-all appearance-none cursor-pointer">
+                                    <option value="comunicacion">Comunicación y Medios Digitales</option>
+                                    <option value="industrial">Ingeniería Industrial</option>
+                                    <option value="administracion">Administración de Empresas</option>
+                                    <option value="arquitectura">Arquitectura</option>
+                                    <option value="psicologia">Psicología</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
                         </div>
 
-                        <div class="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0 border border-gray-200 shadow-inner rotate-90 lg:rotate-0">
-                            <i class="fas fa-exchange-alt text-xl"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0 border border-gray-200 shadow-inner rotate-90 lg:rotate-0">
+                            <i class="fas fa-exchange-alt text-lg sm:text-xl"></i>
                         </div>
 
                         <div class="w-full lg:w-2/5">
-                            <label class="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Me interesa cambiar a:</label>
-                            <select id="sim-target" class="w-full bg-white border-2 border-upaep-red text-upaep-red rounded-xl px-5 py-4 font-bold focus:outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none cursor-pointer shadow-sm">
-                                <option value="administracion">Administración de Empresas</option>
-                                <option value="comunicacion">Comunicación y Medios Digitales</option>
-                                <option value="industrial">Ingeniería Industrial</option>
-                                <option value="arquitectura">Arquitectura</option>
-                                <option value="psicologia">Psicología</option>
-                            </select>
+                            <label for="sim-target" class="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2.5">Me interesa cambiar a:</label>
+                            <div class="relative">
+                                <select id="sim-target" class="w-full bg-white border-2 border-upaep-red text-upaep-red rounded-xl pl-4 pr-10 py-3.5 sm:py-4 text-sm sm:text-base font-bold focus:outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none cursor-pointer shadow-sm">
+                                    <option value="administracion">Administración de Empresas</option>
+                                    <option value="comunicacion">Comunicación y Medios Digitales</option>
+                                    <option value="industrial">Ingeniería Industrial</option>
+                                    <option value="arquitectura">Arquitectura</option>
+                                    <option value="psicologia">Psicología</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-upaep-red pointer-events-none"></i>
+                            </div>
                         </div>
 
-                        <div class="w-full lg:w-auto self-end lg:self-center mt-4 lg:mt-0">
-                            <button onclick="runSimulation()" class="w-full lg:w-auto bg-gray-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-upaep-red transition-all shadow-lg hover:-translate-y-1 transform">
-                                Comparar <i class="fas fa-play ml-2"></i>
+                        <div class="w-full lg:w-auto self-end lg:self-center mt-2 lg:mt-0">
+                            <button onclick="runSimulation()" class="w-full lg:w-auto bg-gray-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-upaep-red transition-all shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base">
+                                <span>Comparar</span> <i class="fas fa-play text-xs"></i>
                             </button>
                         </div>
                     </div>
@@ -716,23 +1146,23 @@
             // TEST VOCACIONAL
             vocational: `
                 <div class="slide-up max-w-4xl mx-auto">
-                    <div class="mb-12 text-center">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><i class="fas fa-compass text-upaep-red mr-3"></i>Test Vocacional Exploratorio</h2>
-                        <p class="text-gray-500 text-lg leading-relaxed max-w-2xl mx-auto">Descubre qué áreas se alinean mejor con tus intereses y habilidades. Recuerda responder con total honestidad.</p>
+                    <div class="mb-8 sm:mb-12 text-center">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4"><i class="fas fa-compass text-upaep-red mr-2.5"></i>Test Vocacional Exploratorio</h2>
+                        <p class="text-gray-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">Descubre qué áreas se alinean mejor con tus intereses y habilidades. Recuerda responder con total honestidad.</p>
                     </div>
 
-                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative mb-12">
+                    <div class="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative mb-10 sm:mb-12">
                         <!-- Advertencia Especialista -->
-                        <div class="bg-yellow-50 border-b border-yellow-200 p-6 flex items-start gap-4">
-                            <i class="fas fa-exclamation-triangle text-yellow-600 text-2xl mt-0.5"></i>
+                        <div class="bg-yellow-50 border-b border-yellow-200 p-5 sm:p-6 flex items-start gap-3.5 sm:gap-4">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-xl sm:text-2xl mt-0.5 shrink-0"></i>
                             <div>
-                                <h4 class="font-bold text-yellow-800 text-lg mb-1">Aviso Importante</h4>
-                                <p class="text-yellow-700 leading-relaxed">Este test es una herramienta de exploración inicial. <strong>Si estás considerando seriamente cambiar de carrera, agenda una cita con Psicopedagogía</strong> para una evaluación profesional.</p>
+                                <h4 class="font-bold text-yellow-800 text-base sm:text-lg mb-1">Aviso Importante</h4>
+                                <p class="text-sm sm:text-base text-yellow-800/90 leading-relaxed">Este test es una herramienta de exploración inicial. <strong>Si estás considerando seriamente cambiar de carrera, agenda una cita con Psicopedagogía</strong> para una evaluación profesional.</p>
                             </div>
                         </div>
 
                         <!-- Contenedor dinámico del test -->
-                        <div class="p-8 sm:p-12" id="vocational-content">
+                        <div class="p-6 sm:p-10 md:p-12" id="vocational-content">
                             <!-- Inyectado vía JS -->
                         </div>
                     </div>
@@ -741,17 +1171,18 @@
 
             // MENSAJES (Chat)
             messages: `
-                <div class="slide-up max-w-5xl mx-auto h-[calc(100vh-14rem)] md:h-[75vh] flex bg-white rounded-3xl md:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                <div class="slide-up max-w-5xl mx-auto h-[calc(100vh-12rem)] md:h-[75vh] flex bg-white rounded-3xl sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                     <!-- Sidebar de Contactos -->
-                    <div class="w-1/3 border-r border-gray-100 bg-gray-50/50 flex flex-col hidden md:flex">
+                    <div class="w-1/3 border-r border-gray-100 bg-gray-50/50 flex-col hidden md:flex">
                         <div class="p-6 border-b border-gray-100">
                             <h3 class="font-bold text-gray-900 text-xl">Mensajes</h3>
+                            <p class="text-xs text-gray-500 mt-1">Red Two-Step Flow · Guías y Expertos</p>
                         </div>
                         <div class="overflow-y-auto flex-grow p-4 space-y-2">
                             <!-- Chat Activo -->
                             <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm cursor-pointer flex items-center gap-4">
-                                <div class="relative">
-                                    <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full object-cover">
+                                <div class="relative shrink-0">
+                                    <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full object-cover" alt="Diego Torres">
                                     <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                                 </div>
                                 <div class="flex-grow overflow-hidden">
@@ -768,50 +1199,52 @@
                     <!-- Área de Chat -->
                     <div class="w-full md:w-2/3 flex flex-col bg-white">
                         <!-- Cabecera Chat -->
-                        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-12 h-12 rounded-full">
+                        <div class="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shrink-0" alt="Diego Torres">
                                 <div>
-                                    <h3 class="font-bold text-gray-900 text-lg">Diego Torres</h3>
+                                    <h3 class="font-bold text-gray-900 text-base sm:text-lg leading-tight">Diego Torres</h3>
                                     <p class="text-xs text-upaep-red font-semibold">Estudiante Guía · Arquitectura</p>
                                 </div>
                             </div>
-                            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button>
+                            <button onclick="navigate('mentors')" class="text-xs font-bold text-gray-500 hover:text-upaep-red md:hidden bg-gray-100 px-3 py-1.5 rounded-lg">
+                                Ver Guías
+                            </button>
                         </div>
 
                         <!-- Historial de Mensajes -->
-                        <div class="flex-grow p-6 overflow-y-auto bg-gray-50/30 flex flex-col gap-4" id="chat-history">
+                        <div class="flex-grow p-4 sm:p-6 overflow-y-auto bg-gray-50/30 flex flex-col gap-4" id="chat-history">
                             <!-- Mensajes Iniciales Simulados -->
-                            <div class="flex flex-col items-center mb-4">
+                            <div class="flex flex-col items-center mb-2">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-100 px-3 py-1 rounded-full">Hoy</span>
                             </div>
 
                             <div class="flex items-end justify-end gap-2">
-                                <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
-                                    <p class="text-sm">Hola Diego, vi tu perfil en la Brújula. Estoy en 2do semestre pero me llama muchísimo la atención Arqui, solo que me da miedo no dar el ancho con las maquetas.</p>
+                                <div class="bg-upaep-red text-white p-3.5 sm:p-4 rounded-2xl rounded-br-none max-w-[88%] sm:max-w-[80%] shadow-sm">
+                                    <p class="text-sm sm:text-base leading-relaxed">Hola Diego, vi tu perfil en la Brújula. Estoy en 2do semestre pero me llama muchísimo la atención Arqui, solo que me da miedo no dar el ancho con las maquetas.</p>
                                 </div>
                             </div>
 
                             <div class="flex items-end gap-2">
-                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
-                                <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
-                                    <p class="text-sm">¡Hola! Qué gusto saludarte. Entiendo perfecto ese miedo, yo pasé por lo mismo. Al principio las maquetas asustan, pero te enseñan la técnica desde cero.</p>
+                                <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0" alt="Diego">
+                                <div class="bg-gray-100 text-gray-800 p-3.5 sm:p-4 rounded-2xl rounded-bl-none max-w-[88%] sm:max-w-[80%] shadow-sm">
+                                    <p class="text-sm sm:text-base leading-relaxed">¡Hola! Qué gusto saludarte. Entiendo perfecto ese miedo, yo pasé por lo mismo. Al principio las maquetas asustan, pero te enseñan la técnica desde cero.</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-end gap-2">
-                                <div class="w-8 h-8 rounded-full bg-transparent"></div>
-                                <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
-                                    <p class="text-sm">¿Te parece si nos tomamos un café en la cafetería central y te cuento cómo es el ritmo de trabajo? ¡Sin compromiso!</p>
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-transparent shrink-0"></div>
+                                <div class="bg-gray-100 text-gray-800 p-3.5 sm:p-4 rounded-2xl rounded-bl-none max-w-[88%] sm:max-w-[80%] shadow-sm">
+                                    <p class="text-sm sm:text-base leading-relaxed">¿Te parece si nos tomamos un café en la cafetería central y te cuento cómo es el ritmo de trabajo? ¡Sin compromiso!</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Input -->
-                        <div class="p-5 border-t border-gray-100 bg-white">
-                            <form onsubmit="sendChatMessage(event)" class="flex gap-3">
-                                <input type="text" id="chat-input" placeholder="Escribe un mensaje a Diego..." class="flex-grow bg-gray-100 border-none rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-upaep-red/50 text-sm">
-                                <button type="submit" class="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-upaep-red transition-colors shrink-0 shadow-md">
+                        <div class="p-3.5 sm:p-5 border-t border-gray-100 bg-white">
+                            <form onsubmit="sendChatMessage(event)" class="flex gap-2.5 sm:gap-3">
+                                <input type="text" id="chat-input" placeholder="Escribe un mensaje a Diego..." class="flex-grow bg-gray-100 border-none rounded-xl px-4 py-3 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-upaep-red/50 text-sm sm:text-base">
+                                <button type="submit" aria-label="Enviar mensaje" class="bg-gray-900 text-white px-5 sm:px-6 py-3 rounded-xl font-bold hover:bg-upaep-red transition-colors shrink-0 shadow-md">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
                             </form>
@@ -820,38 +1253,142 @@
                 </div>
             `,
 
+            // PESTAÑA "INFORMACIÓN" (CANAL DE VENTA Y MODELO COMERCIAL)
+            info: `
+                <div class="slide-up max-w-6xl mx-auto">
+                    <div class="mb-8 sm:mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="bg-red-50 text-upaep-red text-xs font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider inline-block mb-3">Canal Institucional y Comercial</span>
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900"><i class="fas fa-info-circle text-upaep-red mr-2.5"></i>Información de Servicios y Membresía</h2>
+                        </div>
+                        <button onclick="showLandingPage()" class="w-full md:w-auto bg-white border border-gray-200 hover:border-gray-900 text-gray-800 font-bold py-3 px-5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fas fa-arrow-left text-upaep-red"></i> Ver Presentación Completa
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+                        <!-- Columna Izquierda: Resumen Comercial -->
+                        <div class="lg:col-span-5 space-y-6">
+                            <div class="bg-gray-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-upaep-red rounded-full blur-3xl opacity-25 -translate-y-1/2 translate-x-1/2"></div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-red-400 block mb-2">Licencia Institucional Anual</span>
+                                <h3 class="text-xl sm:text-2xl font-bold mb-3">Membresía Brújula Universitaria</h3>
+                                <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                                    Las universidades pueden hacerse con los servicios de la plataforma adquiriendo la membresía anual para toda su comunidad de nuevo ingreso.
+                                </p>
+                                <div class="bg-white/10 rounded-2xl p-5 mb-6">
+                                    <span class="text-xs text-gray-300 block mb-1">Costo de Membresía Institucional</span>
+                                    <span class="text-3xl font-black text-white">$500,000 <span class="text-sm font-normal text-gray-300">por año</span></span>
+                                </div>
+                                <div class="text-xs sm:text-sm text-gray-200 space-y-2.5">
+                                    <p><i class="fas fa-users text-upaep-red mr-2"></i><strong>Segmento:</strong> Estudiantes de 17 a 20 años (preparatoria y primeros semestres).</p>
+                                    <p><i class="fas fa-layer-group text-upaep-red mr-2"></i><strong>Características:</strong> Accesible, Interactiva, Visualmente llamativa y Multifuncional.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
+                                <h4 class="font-bold text-gray-900 text-lg mb-3">Propuesta de Valor</h4>
+                                <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
+                                    Para estudiantes de preparatoria y primer ingreso que enfrentan dudas sobre su futuro, Brújula Universitaria ofrece un acompañamiento vocacional basado en evaluaciones de habilidades e información real de las carreras, brindando la seguridad necesaria para tomar la decisión correcta sin el temor de perder tiempo o percibir el cambio como un fracaso.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Formulario para Solicitar Hablar con un Asesor -->
+                        <div class="lg:col-span-7">
+                            <div class="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 border border-gray-100 shadow-sm">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl sm:text-2xl shrink-0">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Solicitar hablar con un asesor</h3>
+                                        <p class="text-xs sm:text-sm text-gray-500">Completa tus datos en esta pestaña de Información y nos comunicaremos contigo.</p>
+                                    </div>
+                                </div>
+
+                                <form onsubmit="submitAdvisorRequest(event)" class="space-y-4 sm:space-y-5">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre completo</label>
+                                            <input type="text" required placeholder="Ej. Dra. Laura Méndez" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm sm:text-base focus:outline-none focus:border-upaep-red">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Universidad o Institución</label>
+                                            <input type="text" required placeholder="Nombre de la universidad" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm sm:text-base focus:outline-none focus:border-upaep-red">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Correo institucional</label>
+                                            <input type="email" required placeholder="contacto@universidad.edu.mx" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm sm:text-base focus:outline-none focus:border-upaep-red">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Teléfono de contacto</label>
+                                            <input type="tel" required placeholder="222 123 4567" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm sm:text-base focus:outline-none focus:border-upaep-red">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Matrícula estimada de primer ingreso (17 a 20 años)</label>
+                                        <div class="relative">
+                                            <select class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-3.5 text-sm sm:text-base font-medium text-gray-700 focus:outline-none focus:border-upaep-red appearance-none cursor-pointer">
+                                                <option>Hasta 1,000 estudiantes</option>
+                                                <option>De 1,000 a 3,000 estudiantes</option>
+                                                <option>Más de 3,000 estudiantes</option>
+                                            </select>
+                                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Comentarios o requerimientos adicionales</label>
+                                        <textarea rows="3" placeholder="Deseamos información sobre la membresía anual de $500,000 y la integración del simulador..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm sm:text-base focus:outline-none focus:border-upaep-red"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="w-full bg-upaep-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-3 text-sm sm:text-base">
+                                        <i class="fas fa-paper-plane"></i> Enviar Solicitud a un Asesor
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+
             // PERFIL
             profile: `
                 <div class="slide-up max-w-3xl mx-auto">
-                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                         <!-- Cabecera -->
-                        <div class="h-32 bg-gradient-to-r from-gray-800 to-gray-900 relative"></div>
+                        <div class="h-28 sm:h-32 bg-gradient-to-r from-gray-800 to-gray-900 relative"></div>
                         
-                        <div class="px-8 sm:px-12 pb-12 relative">
+                        <div class="px-6 sm:px-12 pb-10 sm:pb-12 relative">
                             <!-- Avatar Flotante -->
-                            <div class="w-28 h-28 bg-white rounded-full p-2 absolute -top-14 border-4 border-white shadow-lg">
-                                <img src="https://placehold.co/200x200/334155/ffffff?text=JC" class="w-full h-full rounded-full object-cover">
+                            <div class="w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-full p-2 absolute -top-12 sm:-top-14 border-4 border-white shadow-lg">
+                                <img src="https://placehold.co/200x200/334155/ffffff?text=JC" class="w-full h-full rounded-full object-cover" alt="Juan Carlos">
                             </div>
                             
-                            <div class="pt-20 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+                            <div class="pt-16 sm:pt-20 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-6">
                                 <div>
-                                    <h2 class="text-3xl font-bold text-gray-900">Juan Carlos Gonzalez</h2>
-                                    <p class="text-upaep-red font-semibold">Comunicación y Medios Digitales · 8vo Semestre</p>
+                                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Juan Carlos Gonzalez</h2>
+                                    <p class="text-upaep-red font-semibold text-sm sm:text-base">Comunicación y Medios Digitales · 8vo Semestre</p>
                                 </div>
-                                <button class="bg-gray-100 text-gray-700 font-bold py-2.5 px-6 rounded-xl hover:bg-gray-200 transition-colors shadow-sm text-sm">
+                                <button class="w-full sm:w-auto bg-gray-100 text-gray-700 font-bold py-2.5 px-6 rounded-xl hover:bg-gray-200 transition-colors shadow-sm text-sm">
                                     Editar Perfil
                                 </button>
                             </div>
 
-                            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Check-ins Completados</h4>
-                                    <p class="text-3xl font-black text-gray-900">4 <span class="text-sm font-medium text-gray-500">este mes</span></p>
+                            <div class="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100">
+                                    <h4 class="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Check-ins Completados</h4>
+                                    <p class="text-2xl sm:text-3xl font-black text-gray-900">4 <span class="text-sm font-medium text-gray-500">este mes</span></p>
                                 </div>
-                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Citas Psicopedagogía</h4>
-                                    <p class="text-3xl font-black text-gray-900">0</p>
-                                    <button onclick="showToast('Agendando...')" class="mt-2 text-upaep-red text-sm font-bold hover:underline">Agendar Primera Cita</button>
+                                <div class="bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100">
+                                    <h4 class="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Citas Psicopedagogía</h4>
+                                    <p class="text-2xl sm:text-3xl font-black text-gray-900">0</p>
+                                    <button onclick="showToast('Agendando cita psicopedagógica...')" class="mt-2 text-upaep-red text-sm font-bold hover:underline">Agendar Primera Cita</button>
                                 </div>
                             </div>
                         </div>
@@ -861,49 +1398,58 @@
         };
 
         // ==========================================
+        // LÓGICA DEL FORMULARIO DE ASESOR (INFO)
+        // ==========================================
+        function submitAdvisorRequest(event) {
+            event.preventDefault();
+            showToast('¡Solicitud enviada! Un asesor de Brújula Universitaria se comunicará contigo pronto.');
+            event.target.reset();
+        }
+
+        // ==========================================
         // LÓGICA DEL TERMÓMETRO (CHECK-IN) 5 PREGUNTAS
         // ==========================================
         const thermoQuestions = [
             {
                 question: "¿Cómo te sentiste en clases esta semana?",
                 options: [
-                    { text: "Motivado y con energía", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
-                    { text: "Un poco cansado pero bien", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
-                    { text: "Aburrido y sin ganas", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
-                    { text: "Muy abrumado/estresado", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                    { text: "Motivado y con energía", color: "bg-green-100 text-green-800 hover:bg-green-200", risk: 0 },
+                    { text: "Un poco cansado pero bien", color: "bg-blue-100 text-blue-800 hover:bg-blue-200", risk: 0 },
+                    { text: "Aburrido y sin ganas", color: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200", risk: 1 },
+                    { text: "Muy abrumado/estresado", color: "bg-red-100 text-red-800 hover:bg-red-200", risk: 2 }
                 ]
             },
             {
                 question: "Al pensar en el futuro de tu carrera, sientes:",
                 options: [
-                    { text: "Emoción y claridad", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
-                    { text: "Cierta incertidumbre normal", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
-                    { text: "Dudas de si es lo correcto", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
-                    { text: "Angustia y arrepentimiento", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                    { text: "Emoción y claridad", color: "bg-green-100 text-green-800 hover:bg-green-200", risk: 0 },
+                    { text: "Cierta incertidumbre normal", color: "bg-blue-100 text-blue-800 hover:bg-blue-200", risk: 0 },
+                    { text: "Dudas de si es lo correcto", color: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200", risk: 1 },
+                    { text: "Angustia y arrepentimiento", color: "bg-red-100 text-red-800 hover:bg-red-200", risk: 2 }
                 ]
             },
             {
                 question: "¿Cómo calificarías tu calidad de sueño estos días?",
                 options: [
-                    { text: "Duermo bien (7-8 hrs)", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
-                    { text: "Duermo poco por estudio", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
-                    { text: "Insomnio por estrés", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                    { text: "Duermo bien (7-8 hrs)", color: "bg-green-100 text-green-800 hover:bg-green-200", risk: 0 },
+                    { text: "Duermo poco por estudio", color: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200", risk: 1 },
+                    { text: "Insomnio por estrés", color: "bg-red-100 text-red-800 hover:bg-red-200", risk: 2 }
                 ]
             },
             {
                 question: "¿Qué tan conectado te sientes con tus compañeros de clase?",
                 options: [
-                    { text: "Tengo un buen grupo de apoyo", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
-                    { text: "Hablo con algunos, todo casual", color: "bg-blue-100 text-blue-700 hover:bg-blue-200", risk: 0 },
-                    { text: "Me siento aislado o fuera de lugar", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 1 }
+                    { text: "Tengo un buen grupo de apoyo", color: "bg-green-100 text-green-800 hover:bg-green-200", risk: 0 },
+                    { text: "Hablo con algunos, todo casual", color: "bg-blue-100 text-blue-800 hover:bg-blue-200", risk: 0 },
+                    { text: "Me siento aislado o fuera de lugar", color: "bg-red-100 text-red-800 hover:bg-red-200", risk: 1 }
                 ]
             },
             {
                 question: "En general, ¿qué tanta presión familiar sientes respecto a tus estudios?",
                 options: [
-                    { text: "Me apoyan sin presionar", color: "bg-green-100 text-green-700 hover:bg-green-200", risk: 0 },
-                    { text: "Presión normal por mis notas", color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200", risk: 1 },
-                    { text: "Mucha presión por expectativas", color: "bg-red-100 text-red-700 hover:bg-red-200", risk: 2 }
+                    { text: "Me apoyan sin presionar", color: "bg-green-100 text-green-800 hover:bg-green-200", risk: 0 },
+                    { text: "Presión normal por mis notas", color: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200", risk: 1 },
+                    { text: "Mucha presión por expectativas", color: "bg-red-100 text-red-800 hover:bg-red-200", risk: 2 }
                 ]
             }
         ];
@@ -944,7 +1490,7 @@
             const progress = ((currentThermoQuestion) / thermoQuestions.length) * 100;
 
             let html = `
-                <div class="mb-8">
+                <div class="mb-6 sm:mb-8 pr-8">
                     <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
                         <span>Check-in Semanal</span>
                         <span>${currentThermoQuestion + 1} / ${thermoQuestions.length}</span>
@@ -955,13 +1501,13 @@
                 </div>
 
                 <div class="fade-in">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center leading-tight">${q.question}</h3>
-                    <div class="flex flex-col gap-4">
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center leading-snug">${q.question}</h3>
+                    <div class="flex flex-col gap-3 sm:gap-4">
             `;
 
             q.options.forEach(opt => {
                 html += `
-                    <button onclick="selectThermoOption(${opt.risk})" class="${opt.color} font-bold py-4 px-6 rounded-2xl transition-all duration-200 text-left border-2 border-transparent hover:border-current transform hover:-translate-y-1">
+                    <button onclick="selectThermoOption(${opt.risk})" class="${opt.color} font-bold py-3.5 sm:py-4 px-5 sm:px-6 rounded-2xl transition-all duration-200 text-left border-2 border-transparent hover:border-current text-sm sm:text-base">
                         ${opt.text}
                     </button>
                 `;
@@ -988,20 +1534,20 @@
             if (totalThermoRisk > 4) {
                 html = `
                     <div class="text-center fade-in">
-                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                            <i class="fas fa-hands-helping text-4xl text-yellow-600"></i>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+                            <i class="fas fa-hands-helping text-3xl sm:text-4xl text-yellow-600"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Notamos que ha sido una semana difícil</h3>
-                        <p class="text-gray-500 mb-8 leading-relaxed">Detectamos niveles de estrés o dudas sobre tu carrera. No tienes que cargar con esto solo. Aquí tienes algunas opciones para apoyarte ahora mismo:</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Notamos que ha sido una semana difícil</h3>
+                        <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">Detectamos niveles de estrés o dudas sobre tu carrera. No tienes que cargar con esto solo. Aquí tienes algunas opciones para apoyarte ahora mismo:</p>
                         
                         <div class="flex flex-col gap-3">
-                            <button onclick="closeThermometer(); navigate('vocational'); startVocationalTest()" class="w-full bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3">
+                            <button onclick="closeThermometer(); navigate('vocational'); startVocationalTest()" class="w-full bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 font-bold py-3.5 sm:py-4 px-5 rounded-xl transition flex items-center justify-center gap-3 text-sm sm:text-base">
                                 <i class="fas fa-compass text-lg"></i> Realizar Test Vocacional
                             </button>
-                            <button onclick="closeThermometer(); navigate('mentors')" class="w-full bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3">
+                            <button onclick="closeThermometer(); navigate('mentors')" class="w-full bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold py-3.5 sm:py-4 px-5 rounded-xl transition flex items-center justify-center gap-3 text-sm sm:text-base">
                                 <i class="fas fa-users text-lg"></i> Hablar con un Estudiante Guía
                             </button>
-                            <button onclick="closeThermometer(); showToast('Redirigiendo a citas psicopedagógicas...')" class="w-full bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-3 mt-2">
+                            <button onclick="closeThermometer(); showToast('Redirigiendo a citas psicopedagógicas...')" class="w-full bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 font-bold py-3.5 sm:py-4 px-5 rounded-xl transition flex items-center justify-center gap-3 mt-1 text-sm sm:text-base">
                                 <i class="fas fa-calendar-check text-lg"></i> Agendar Cita Psicopedagógica
                             </button>
                         </div>
@@ -1010,12 +1556,12 @@
             } else {
                 html = `
                     <div class="text-center fade-in">
-                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                            <i class="fas fa-check text-4xl text-green-600"></i>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+                            <i class="fas fa-check text-3xl sm:text-4xl text-green-600"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-3">¡Registro Completado!</h3>
-                        <p class="text-gray-500 mb-8 leading-relaxed">Qué bueno saber que llevas una buena semana. Recuerda que mantener el equilibrio es clave para tu éxito universitario.</p>
-                        <button onclick="closeThermometer()" class="w-full bg-gray-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg">
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">¡Registro Completado!</h3>
+                        <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">Qué bueno saber que llevas una buena semana. Recuerda que mantener el equilibrio es clave para tu éxito universitario.</p>
+                        <button onclick="closeThermometer()" class="w-full bg-gray-900 text-white font-bold py-3.5 sm:py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg text-sm sm:text-base">
                             Cerrar y continuar
                         </button>
                     </div>
@@ -1105,8 +1651,8 @@
             const progress = (currentVocationalIndex / vocationalQuestions.length) * 100;
 
             const html = `
-                <div class="mb-10 fade-in">
-                    <div class="flex justify-between text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">
+                <div class="mb-8 sm:mb-10 fade-in">
+                    <div class="flex justify-between text-xs sm:text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">
                         <span>Progreso del test</span>
                         <span>Pregunta ${currentVocationalIndex + 1} de ${vocationalQuestions.length}</span>
                     </div>
@@ -1115,15 +1661,15 @@
                     </div>
                 </div>
 
-                <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-10 text-center leading-tight fade-in" style="animation-delay: 0.1s;">${q.text}</h3>
+                <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6 sm:mb-10 text-center leading-snug fade-in" style="animation-delay: 0.1s;">${q.text}</h3>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 fade-in" style="animation-delay: 0.2s;">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 mb-4 fade-in" style="animation-delay: 0.2s;">
                     ${q.options.map((opt) => `
-                        <button onclick="selectVocationalOption('${opt.category}')" class="text-left bg-white border-2 border-gray-100 hover:border-upaep-red hover:shadow-md hover:bg-red-50 text-gray-700 p-6 rounded-2xl transition-all duration-200 group flex items-start gap-4">
+                        <button onclick="selectVocationalOption('${opt.category}')" class="text-left bg-white border-2 border-gray-100 hover:border-upaep-red hover:shadow-md hover:bg-red-50 text-gray-700 p-4 sm:p-6 rounded-2xl transition-all duration-200 group flex items-start gap-3.5 sm:gap-4">
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-upaep-red shrink-0 flex items-center justify-center mt-0.5 transition-colors">
                                 <div class="w-2.5 h-2.5 rounded-full bg-upaep-red opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>
-                            <span class="font-medium text-base leading-relaxed group-hover:text-gray-900">${opt.text}</span>
+                            <span class="font-medium text-sm sm:text-base leading-relaxed group-hover:text-gray-900">${opt.text}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -1153,31 +1699,31 @@
 
             contentDiv.innerHTML = `
                 <div class="text-center slide-up">
-                    <div class="inline-flex items-center justify-center w-28 h-28 rounded-full ${career.bg} ${career.color} text-5xl mb-6 shadow-sm border-4 border-white ring-4 ring-gray-50">
+                    <div class="inline-flex items-center justify-center w-20 h-20 sm:w-28 sm:h-28 rounded-full ${career.bg} ${career.color} text-4xl sm:text-5xl mb-5 sm:mb-6 shadow-sm border-4 border-white ring-4 ring-gray-50">
                         <i class="fas ${career.icon}"></i>
                     </div>
-                    <h3 class="text-gray-500 font-bold uppercase tracking-widest text-xs mb-3">Tus respuestas apuntan al área de</h3>
-                    <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-8">${career.name}</h2>
+                    <h3 class="text-gray-500 font-bold uppercase tracking-widest text-xs mb-2 sm:mb-3">Tus respuestas apuntan al área de</h3>
+                    <h2 class="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-6 sm:mb-8">${career.name}</h2>
                     
-                    <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 mb-10 text-left border border-gray-100 inline-block max-w-2xl mx-auto shadow-inner">
-                        <p class="text-gray-700 text-lg leading-relaxed mb-6">${career.profile}</p>
-                        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-                            <p class="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider"><i class="fas fa-book-open text-upaep-red mr-2"></i>Materias clave:</p>
-                            <p class="text-gray-600">${career.subjects.slice(0, 6).join(', ')}...</p>
+                    <div class="bg-gray-50 rounded-3xl p-5 sm:p-10 mb-8 sm:mb-10 text-left border border-gray-100 inline-block max-w-2xl mx-auto shadow-inner">
+                        <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-5 sm:mb-6">${career.profile}</p>
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm">
+                            <p class="text-xs sm:text-sm font-bold text-gray-900 mb-2 uppercase tracking-wider"><i class="fas fa-book-open text-upaep-red mr-2"></i>Materias clave:</p>
+                            <p class="text-sm sm:text-base text-gray-600">${career.subjects.slice(0, 6).join(', ')}...</p>
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
-                        <button onclick="simulateCareer('${highestCategory}')" class="flex-1 bg-gray-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg hover:-translate-y-1 transform flex items-center justify-center gap-3">
+                    <div class="flex flex-col sm:flex-row justify-center gap-3.5 sm:gap-4 max-w-2xl mx-auto">
+                        <button onclick="simulateCareer('${highestCategory}')" class="flex-1 bg-gray-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition shadow-lg flex items-center justify-center gap-3 text-sm sm:text-base">
                             <i class="fas fa-balance-scale text-lg"></i> Comparar en Simulador
                         </button>
-                        <button onclick="showToast('Cita de orientación agendada correctamente.')" class="flex-1 bg-white border-2 border-upaep-red text-upaep-red font-bold py-4 px-6 rounded-xl hover:bg-red-50 transition shadow-sm hover:-translate-y-1 transform flex items-center justify-center gap-3">
+                        <button onclick="showToast('Cita de orientación agendada correctamente.')" class="flex-1 bg-white border-2 border-upaep-red text-upaep-red font-bold py-4 px-6 rounded-xl hover:bg-red-50 transition shadow-sm flex items-center justify-center gap-3 text-sm sm:text-base">
                             <i class="fas fa-user-md text-lg"></i> Cita Psicopedagógica
                         </button>
                     </div>
                     
-                    <div class="mt-12 pt-6 border-t border-gray-100">
-                        <button onclick="startVocationalTest()" class="text-gray-400 hover:text-gray-700 font-semibold text-sm transition flex items-center justify-center gap-2 mx-auto">
+                    <div class="mt-8 sm:mt-12 pt-6 border-t border-gray-100">
+                        <button onclick="startVocationalTest()" class="text-gray-500 hover:text-gray-800 font-semibold text-sm transition flex items-center justify-center gap-2 mx-auto">
                             <i class="fas fa-redo"></i> Repetir Test Vocacional
                         </button>
                     </div>
@@ -1232,50 +1778,50 @@
             const savedPercentage = Math.round((commonSubjects.length / totalEvaluatedSubjects) * 100);
 
             resultsContainer.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                     <!-- Comparativa Perfiles -->
-                    <div class="bg-gray-900 rounded-[2.5rem] p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                    <div class="bg-gray-900 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-upaep-red rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-                        <h3 class="text-xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-exchange-alt text-upaep-red"></i> Comparativa de Perfiles</h3>
+                        <h3 class="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3"><i class="fas fa-exchange-alt text-upaep-red"></i> Comparativa de Perfiles</h3>
                         
-                        <div class="mb-8">
-                            <span class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 block">Dejas de enfocarte en:</span>
-                            <h4 class="text-lg font-bold text-gray-200 mb-2">${source.name}</h4>
-                            <p class="text-sm text-gray-400 leading-relaxed">${source.profile}</p>
+                        <div class="mb-6 sm:mb-8">
+                            <span class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1.5 block">Dejas de enfocarte en:</span>
+                            <h4 class="text-base sm:text-lg font-bold text-gray-200 mb-2">${source.name}</h4>
+                            <p class="text-sm sm:text-base text-gray-300 leading-relaxed">${source.profile}</p>
                         </div>
                         
-                        <div class="relative pl-6 border-l-2 border-upaep-red">
-                            <span class="text-upaep-red text-xs font-bold uppercase tracking-wider mb-2 block">Para enfocarte en:</span>
-                            <h4 class="text-xl font-bold text-white mb-2">${target.name}</h4>
-                            <p class="text-sm text-gray-300 leading-relaxed">${target.profile}</p>
+                        <div class="relative pl-5 sm:pl-6 border-l-2 border-upaep-red">
+                            <span class="text-upaep-red text-xs font-bold uppercase tracking-wider mb-1.5 block">Para enfocarte en:</span>
+                            <h4 class="text-lg sm:text-xl font-bold text-white mb-2">${target.name}</h4>
+                            <p class="text-sm sm:text-base text-gray-200 leading-relaxed">${target.profile}</p>
                         </div>
                     </div>
 
                     <!-- Revalidación Estimada -->
-                    <div class="bg-white rounded-[2.5rem] p-8 sm:p-10 border border-gray-100 shadow-sm flex flex-col justify-center">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Simulación de Revalidación</h3>
-                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Estimación basada en el tronco común interdepartamental y materias equivalentes entre ambos planes.</p>
+                    <div class="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 border border-gray-100 shadow-sm flex flex-col justify-center">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Simulación de Convalidación</h3>
+                        <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">Estimación basada en el tronco común interdepartamental y materias equivalentes entre ambos planes.</p>
                         
-                        <div class="mb-4 flex justify-between items-end">
-                            <span class="text-sm font-bold text-gray-400 uppercase tracking-wider">Créditos conservados</span>
-                            <span class="text-3xl font-black text-green-500">${savedPercentage}%</span>
+                        <div class="mb-3 flex justify-between items-end">
+                            <span class="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-wider">Créditos conservados</span>
+                            <span class="text-2xl sm:text-3xl font-black text-green-500">${savedPercentage}%</span>
                         </div>
-                        <div class="w-full bg-gray-100 rounded-full h-4 mb-8 overflow-hidden shadow-inner">
+                        <div class="w-full bg-gray-100 rounded-full h-4 mb-6 sm:mb-8 overflow-hidden shadow-inner">
                             <div class="bg-green-500 h-full rounded-full progress-bar-anim" style="width: 0%;" data-target="${savedPercentage}%"></div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"><i class="fas fa-check text-green-500 mr-2"></i>Materias que salvas</h4>
-                                <ul class="text-sm text-gray-600 space-y-3">
+                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2"><i class="fas fa-check text-green-500 mr-2"></i>Materias que convalidas</h4>
+                                <ul class="text-sm sm:text-base text-gray-700 space-y-2.5">
                                     ${commonSubjects.map(s => `<li>• ${s}</li>`).join('')}
                                 </ul>
                             </div>
                             <div>
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"><i class="fas fa-star text-upaep-red mr-2"></i>Nuevas materias</h4>
-                                <ul class="text-sm text-gray-600 space-y-3">
+                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-100 pb-2"><i class="fas fa-star text-upaep-red mr-2"></i>Nuevas materias</h4>
+                                <ul class="text-sm sm:text-base text-gray-700 space-y-2.5">
                                     ${newSubjects.slice(0,4).map(s => `<li>• ${s}</li>`).join('')}
-                                    <li class="text-gray-400 italic">Y otras más...</li>
+                                    <li class="text-gray-400 italic text-sm">Y otras más...</li>
                                 </ul>
                             </div>
                         </div>
@@ -1305,8 +1851,8 @@
             
             chatHistory.innerHTML += `
                 <div class="flex items-end justify-end gap-2 fade-in">
-                    <div class="bg-upaep-red text-white p-4 rounded-2xl rounded-br-none max-w-[80%] shadow-sm">
-                        <p class="text-sm">${message}</p>
+                    <div class="bg-upaep-red text-white p-3.5 sm:p-4 rounded-2xl rounded-br-none max-w-[88%] sm:max-w-[80%] shadow-sm">
+                        <p class="text-sm sm:text-base leading-relaxed">${message}</p>
                     </div>
                 </div>
             `;
@@ -1318,8 +1864,8 @@
             setTimeout(() => {
                 chatHistory.innerHTML += `
                     <div id="${typingId}" class="flex items-end gap-2 fade-in">
-                        <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
-                        <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-1">
+                        <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0" alt="Diego">
+                        <div class="bg-gray-100 text-gray-800 p-3.5 sm:p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-1">
                             <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
                             <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
                             <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
@@ -1334,9 +1880,9 @@
                     
                     chatHistory.innerHTML += `
                         <div class="flex items-end gap-2 fade-in">
-                            <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-8 h-8 rounded-full">
-                            <div class="bg-gray-100 text-gray-800 p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-sm">
-                                <p class="text-sm">Entiendo. Toma tu tiempo para pensarlo. Si decides explorar más a fondo Arquitectura o cualquier duda de materias, aquí estoy para apoyarte.</p>
+                            <img src="https://placehold.co/100x100/c7d2fe/4f46e5?text=D" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0" alt="Diego">
+                            <div class="bg-gray-100 text-gray-800 p-3.5 sm:p-4 rounded-2xl rounded-bl-none max-w-[88%] sm:max-w-[80%] shadow-sm">
+                                <p class="text-sm sm:text-base leading-relaxed">Entiendo. Toma tu tiempo para pensarlo. Si decides explorar más a fondo Arquitectura o cualquier duda de materias, aquí estoy para apoyarte.</p>
                             </div>
                         </div>
                     `;
@@ -1442,8 +1988,8 @@
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-gray-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 font-medium text-sm';
-            toast.innerHTML = `<i class="fas fa-info-circle text-upaep-red text-lg"></i> ${message}`;
+            toast.className = 'bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 font-medium text-xs sm:text-sm pointer-events-auto';
+            toast.innerHTML = `<i class="fas fa-info-circle text-upaep-red text-base sm:text-lg shrink-0"></i> <span>${message}</span>`;
             
             container.appendChild(toast);
             
@@ -1454,10 +2000,10 @@
             setTimeout(() => {
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 3200);
         }
 
-        // Inicializar la app
+        // Inicializar vista por defecto en la plataforma para cuando el usuario entre
         document.addEventListener('DOMContentLoaded', () => {
             navigate('home');
         });
