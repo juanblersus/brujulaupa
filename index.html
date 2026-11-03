@@ -48,6 +48,13 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
         
         .glass-modal {
             background: rgba(15, 23, 42, 0.65);
@@ -55,16 +62,66 @@
             -webkit-backdrop-filter: blur(8px);
         }
 
+        /* ==========================================
+           MOTION GRAPHICS & KEYFRAMES
+           ========================================== */
         .slide-up {
-            animation: slideUp 0.45s ease-out forwards;
+            animation: slideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .fade-in {
-            animation: fadeIn 0.35s ease-out forwards;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .float-slow {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        .float-delayed {
+            animation: floatSlow 6s ease-in-out 2s infinite;
+        }
+
+        .spin-slow {
+            animation: spinSlow 28s linear infinite;
+        }
+
+        .spin-reverse-slow {
+            animation: spinReverseSlow 22s linear infinite;
+        }
+
+        .pulse-soft {
+            animation: pulseSoft 2.2s infinite;
+        }
+
+        .blob-anim {
+            animation: blobBounce 10s infinite alternate ease-in-out;
+        }
+
+        /* Animación de trazos SVG para conectores (Two-Step Flow) */
+        .svg-dash-flow {
+            stroke-dasharray: 8 6;
+            animation: dashFlow 12s linear infinite;
+        }
+
+        /* Animación de barras de ecualizador / ondas */
+        .wave-bar {
+            animation: waveStretch 1.2s ease-in-out infinite;
+        }
+
+        /* Aparición suave al hacer scroll */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(16px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -73,20 +130,45 @@
             to { opacity: 1; }
         }
 
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinReverseSlow {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.07); opacity: 0.85; }
+        }
+
+        @keyframes blobBounce {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-20px, 15px) scale(1.08); }
+            100% { transform: translate(15px, -15px) scale(0.95); }
+        }
+
+        @keyframes dashFlow {
+            to { stroke-dashoffset: -140; }
+        }
+
+        @keyframes waveStretch {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
-        
-        .pulse-soft {
-            animation: pulseSoft 2s infinite;
-        }
-        
-        @keyframes pulseSoft {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
 
-        /* Soporte para barra inferior en pantallas móviles modernas */
         .safe-bottom {
             padding-bottom: env(safe-area-inset-bottom, 0.5rem);
         }
@@ -148,73 +230,136 @@
             </div>
         </header>
 
-        <!-- Hero / Propuesta de Valor -->
+        <!-- Hero / Propuesta de Valor con Motion Graphics e Imagen -->
         <section id="propuesta" class="relative overflow-hidden py-10 sm:py-16 md:py-24 border-b border-gray-100">
-            <div class="absolute top-0 right-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-red-100/60 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
-            <div class="absolute bottom-0 left-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-100/60 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+            <!-- Esferas de luz animadas en el fondo -->
+            <div class="absolute top-0 right-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-red-200/50 rounded-full blur-3xl blob-anim"></div>
+            <div class="absolute bottom-0 left-0 -z-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-200/50 rounded-full blur-3xl blob-anim" style="animation-delay: 3s;"></div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                    <!-- Columna Texto Propuesta de Valor -->
                     <div class="lg:col-span-7 slide-up">
-                        <span class="inline-flex items-center gap-2 bg-red-50 text-upaep-red border border-red-100 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-5">
-                            <i class="fas fa-compass"></i> Propuesta de Valor
-                        </span>
+                        <div class="inline-flex items-center gap-2 bg-red-50 text-upaep-red border border-red-100 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-5 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-upaep-red animate-ping"></span>
+                            Propuesta de Valor
+                        </div>
                         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-tight mb-6">
-                            Acompañamiento vocacional <span class="text-upaep-red">sin temor a equivocarte.</span>
+                            Acompañamiento vocacional <span class="text-transparent bg-clip-text bg-gradient-to-r from-upaep-red to-red-500">sin temor a equivocarte.</span>
                         </h1>
-                        <div class="bg-white p-5 sm:p-8 rounded-3xl border border-gray-200/80 shadow-sm mb-8">
+                        <div class="bg-white/90 backdrop-blur p-5 sm:p-8 rounded-3xl border border-gray-200/80 shadow-md mb-8 relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-upaep-red"></div>
                             <p class="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed">
                                 Para estudiantes de preparatoria y primer ingreso que enfrentan dudas sobre su futuro, <strong class="text-gray-900">Brújula Universitaria</strong> ofrece un acompañamiento vocacional basado en evaluaciones de habilidades e información real de las carreras, brindando la seguridad necesaria para tomar la decisión correcta sin el temor de perder tiempo o percibir el cambio como un fracaso.
                             </p>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-3.5 sm:gap-4">
-                            <button onclick="enterApp('home')" class="w-full sm:w-auto bg-upaep-red text-white px-7 py-4 rounded-2xl font-bold text-base hover:bg-red-700 transition-all shadow-xl shadow-red-500/25 flex items-center justify-center gap-3">
+
+                        <div class="flex flex-col sm:flex-row gap-3.5 sm:gap-4 mb-8">
+                            <button onclick="enterApp('home')" class="w-full sm:w-auto bg-upaep-red text-white px-7 py-4 rounded-2xl font-bold text-base hover:bg-red-700 transition-all shadow-xl shadow-red-500/25 hover:-translate-y-0.5 transform flex items-center justify-center gap-3">
                                 <i class="fas fa-rocket"></i> Explorar Plataforma Interactiva
                             </button>
-                            <button onclick="enterApp('info')" class="w-full sm:w-auto bg-white text-gray-900 border-2 border-gray-200 hover:border-gray-900 px-7 py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-3">
-                                <i class="fas fa-user-tie text-upaep-red"></i> Hablar con un Asesor
+                            <button onclick="openVideo('Reel Institucional: Ecosistema Brújula Universitaria')" class="w-full sm:w-auto bg-gray-900 text-white hover:bg-gray-800 px-6 py-4 rounded-2xl font-bold text-base transition-all shadow-lg flex items-center justify-center gap-3 group">
+                                <span class="w-7 h-7 rounded-full bg-upaep-red text-white flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-play ml-0.5"></i>
+                                </span>
+                                Ver Video Demo
                             </button>
+                        </div>
+
+                        <!-- Mini prueba social estudiantil -->
+                        <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500 font-medium">
+                            <div class="flex -space-x-2.5 overflow-hidden">
+                                <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Estudiante">
+                                <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Estudiante">
+                                <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80" alt="Estudiante">
+                                <div class="h-9 w-9 rounded-full ring-2 ring-white bg-red-50 text-upaep-red font-bold flex items-center justify-center text-xs">+</div>
+                            </div>
+                            <span>Diseñado para jóvenes de <strong class="text-gray-800">17 a 20 años</strong> en etapa de transición y primeros semestres.</span>
                         </div>
                     </div>
 
-                    <!-- Tarjeta Visual Resumen -->
-                    <div class="lg:col-span-5 slide-up">
-                        <div class="bg-gray-900 text-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-40 h-40 bg-upaep-red rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
-                            <div class="flex items-center justify-between mb-6 sm:mb-8">
-                                <span class="bg-white/10 text-white text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">Ecosistema Estudiantil</span>
-                                <i class="fas fa-shield-heart text-2xl text-upaep-red"></i>
+                    <!-- Columna Escenario Motion Graphics + Fotografía e Ilustración -->
+                    <div class="lg:col-span-5 relative slide-up">
+                        <div class="relative mx-auto max-w-md lg:max-w-none">
+                            <!-- Anillo SVG de Brújula Giratorio (Motion Graphic) -->
+                            <svg class=" -top-10 -right-10 w-56 h-56 sm:w-64 sm:h-64 text-upaep-red/15 spin-slow pointer-events-none hidden sm:block absolute" viewBox="0 0 200 200" fill="none">
+                                <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-width="2" stroke-dasharray="10 8" />
+                                <circle cx="100" cy="100" r="72" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M100 4 L105 22 L95 22 Z" fill="currentColor" />
+                                <path d="M100 196 L105 178 L95 178 Z" fill="currentColor" />
+                                <path d="M4 100 L22 105 L22 95 Z" fill="currentColor" />
+                                <path d="M196 100 L178 105 L178 95 Z" fill="currentColor" />
+                            </svg>
+
+                            <!-- Tarjeta Principal con Imagen Real y Overlay Interactivo -->
+                            <div class="bg-gray-900 text-white rounded-3xl sm:rounded-[2.5rem] p-3 sm:p-4 shadow-2xl relative overflow-hidden border border-gray-800">
+                                <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden h-64 sm:h-72">
+                                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80" alt="Estudiantes universitarios conversando" class="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-700">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+                                    
+                                    <!-- Botón flotante de Video sobre la imagen -->
+                                    <button onclick="openVideo('Cápsula: Cómo funciona Brújula Universitaria')" class="absolute top-4 right-4 bg-black/60 hover:bg-upaep-red backdrop-blur-md text-white text-xs font-bold px-3.5 py-2 rounded-full flex items-center gap-2 transition-colors border border-white/20">
+                                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                        <i class="fas fa-play text-[10px]"></i> Ver Cápsula
+                                    </button>
+
+                                    <div class="absolute bottom-4 left-4 right-4">
+                                        <span class="bg-upaep-red text-white text-[10px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">Acompañamiento Real</span>
+                                        <h3 class="text-lg sm:text-xl font-bold text-white mt-1.5">Decisiones seguras y sin estigma</h3>
+                                    </div>
+                                </div>
+
+                                <!-- Módulos animados internos -->
+                                <div class="p-3 sm:p-4 space-y-3">
+                                    <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-lg shrink-0">
+                                                <i class="fas fa-heartbeat pulse-soft"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-xs sm:text-sm">Check-in Emocional Activo</h4>
+                                                <p class="text-[11px] text-gray-400">Reflexión semanal y canalización</p>
+                                            </div>
+                                        </div>
+                                        <!-- Ecualizador animado -->
+                                        <div class="flex items-end gap-1 h-5 pr-2">
+                                            <span class="w-1 h-4 bg-red-400 rounded-full wave-bar"></span>
+                                            <span class="w-1 h-5 bg-red-500 rounded-full wave-bar" style="animation-delay: 0.2s"></span>
+                                            <span class="w-1 h-3 bg-red-400 rounded-full wave-bar" style="animation-delay: 0.4s"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5">
+                                        <div class="flex justify-between items-center text-xs mb-1.5">
+                                            <span class="font-bold text-gray-200 flex items-center gap-1.5"><i class="fas fa-exchange-alt text-blue-400"></i> Simulador de Convalidación</span>
+                                            <span class="font-extrabold text-green-400">Tronco Común</span>
+                                        </div>
+                                        <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-gradient-to-r from-blue-400 to-green-400 h-full rounded-full w-3/4 animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-xl sm:text-2xl font-bold mb-3">Retención y Bienestar Universitario</h3>
-                            <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">Transformamos la incertidumbre vocacional de los primeros semestres en decisiones informadas y acompañadas.</p>
-                            
-                            <div class="space-y-3.5 sm:space-y-4">
-                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
-                                        <i class="fas fa-heartbeat"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm sm:text-base">Contención Emocional</h4>
-                                        <p class="text-xs sm:text-sm text-gray-300">Monitoreo semanal de estrés y adaptación</p>
-                                    </div>
+
+                            <!-- Tarjeta Flotante 1 (Izquierda Superior) -->
+                            <div class="glass-card rounded-2xl p-3.5 shadow-xl hidden sm:flex items-center gap-3 absolute -left-8 top-10 float-slow z-20">
+                                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fas fa-compass spin-reverse-slow"></i>
                                 </div>
-                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
-                                        <i class="fas fa-exchange-alt"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm sm:text-base">Certeza Académica</h4>
-                                        <p class="text-xs sm:text-sm text-gray-300">Simulación real de convalidación de materias</p>
-                                    </div>
+                                <div class="pr-2">
+                                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Exploración</p>
+                                    <p class="text-xs font-bold text-gray-900">Test de Habilidades</p>
                                 </div>
-                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
-                                        <i class="fas fa-comments"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm sm:text-base">Comunicación Two-Step Flow</h4>
-                                        <p class="text-xs sm:text-sm text-gray-300">Conexión con guías pares, asesores y expertos</p>
-                                    </div>
+                            </div>
+
+                            <!-- Tarjeta Flotante 2 (Derecha Inferior) -->
+                            <div class="glass-card rounded-2xl p-3.5 shadow-xl hidden sm:flex items-center gap-3 absolute -right-6 bottom-20 float-delayed z-20">
+                                <div class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="pr-2">
+                                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-green-600">Two-Step Flow</p>
+                                    <p class="text-xs font-bold text-gray-900">Guías, Pares y Expertos</p>
                                 </div>
                             </div>
                         </div>
@@ -223,50 +368,58 @@
             </div>
         </section>
 
-        <!-- Características -->
-        <section id="caracteristicas" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Características con Ilustraciones Vectoriales Animadas -->
+        <section id="caracteristicas" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
             <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
                 <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Diseño Centrado en el Estudiante</span>
                 <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900">Características de la Plataforma</h2>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <!-- Accesible -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 text-center group relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-20 h-20 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl relative z-10 group-hover:rotate-6 transition-transform">
                         <i class="fas fa-universal-access"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Accesible</h3>
-                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Disponible en cualquier computadora, tableta o teléfono móvil con navegación intuitiva y lectura clara.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 relative z-10">Accesible</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed relative z-10">Disponible en cualquier computadora, tableta o teléfono móvil con navegación intuitiva y lectura clara.</p>
                 </div>
 
-                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <!-- Interactiva -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 text-center group relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-20 h-20 bg-purple-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl relative z-10 group-hover:scale-110 transition-transform">
                         <i class="fas fa-hand-pointer"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Interactiva</h3>
-                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Herramientas dinámicas de autoevaluación, simulación en tiempo real y mensajería directa con retroalimentación inmediata.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 relative z-10">Interactiva</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed relative z-10">Herramientas dinámicas de autoevaluación, simulación en tiempo real y mensajería directa con retroalimentación inmediata.</p>
                 </div>
 
-                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <!-- Visualmente llamativa -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 text-center group relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-20 h-20 bg-red-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-2xl relative z-10 group-hover:-rotate-6 transition-transform">
                         <i class="fas fa-palette"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Visualmente llamativa</h3>
-                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Interfaz moderna, limpia y empática que reduce la fatiga visual y transmite seguridad durante momentos de duda vocacional.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 relative z-10">Visualmente llamativa</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed relative z-10">Interfaz moderna, limpia y empática que reduce la fatiga visual y transmite seguridad durante momentos de duda vocacional.</p>
                 </div>
 
-                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center group">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <!-- Multifuncional -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 text-center group relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-20 h-20 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl relative z-10 group-hover:scale-110 transition-transform">
                         <i class="fas fa-layer-group"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Multifuncional</h3>
-                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed">Integra diagnóstico emocional, exploración vocacional, simulación curricular, mentoría entre pares y biblioteca multimedia en un solo lugar.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 relative z-10">Multifuncional</h3>
+                    <p class="text-sm sm:text-base text-gray-600 leading-relaxed relative z-10">Integra diagnóstico emocional, exploración vocacional, simulación curricular, mentoría entre pares y biblioteca multimedia en un solo lugar.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Beneficios -->
-        <section id="beneficios" class="py-12 sm:py-16 md:py-20 bg-white border-y border-gray-100">
+        <!-- Beneficios + Diagrama Motion Graphic Two-Step Flow -->
+        <section id="beneficios" class="py-12 sm:py-16 md:py-20 bg-white border-y border-gray-100 reveal-on-scroll">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
                     <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Impacto Real</span>
@@ -274,120 +427,182 @@
                     <p class="text-gray-600 text-sm sm:text-base">Cada módulo responde a las inquietudes reales que viven los jóvenes al elegir o revalidar su camino profesional.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
                     <!-- Beneficio 1 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-red-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-red-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-red-100 text-upaep-red flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-red-100 text-upaep-red flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-heartbeat"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Check-in Semanal Reflexivo</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Te permite realizar un Check-in semanal que te ayuda a reflexionar sobre tu última semana en la universidad y brindarte apoyo e información necesaria.</p>
                         </div>
                         <button onclick="enterApp('home'); setTimeout(openThermometer, 200);" class="mt-6 text-sm font-bold text-upaep-red hover:underline flex items-center gap-1.5">
-                            Probar Check-in <i class="fas fa-arrow-right"></i>
+                            Probar Check-in <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
 
                     <!-- Beneficio 2 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-purple-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-purple-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-compass"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Test Vocacional en Línea</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso a un test vocacional en línea que te permite dar el primer paso para descubrir tu verdadera vocación de forma clara y estructurada.</p>
                         </div>
                         <button onclick="enterApp('vocational'); setTimeout(startVocationalTest, 200);" class="mt-6 text-sm font-bold text-purple-600 hover:underline flex items-center gap-1.5">
-                            Ir al Test Vocacional <i class="fas fa-arrow-right"></i>
+                            Ir al Test Vocacional <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
 
                     <!-- Beneficio 3 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-blue-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-blue-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-address-book"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Directorio de Acompañamiento</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Directorio con asesores, estudiantes que han pasado por procesos similares y expertos dispuestos a orientarte en tu toma de decisiones.</p>
                         </div>
                         <button onclick="enterApp('mentors')" class="mt-6 text-sm font-bold text-blue-600 hover:underline flex items-center gap-1.5">
-                            Ver Directorio de Guías <i class="fas fa-arrow-right"></i>
+                            Ver Directorio de Guías <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
 
                     <!-- Beneficio 4 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-indigo-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-indigo-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-comments"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Chat con Guías, Pares y Expertos</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Comunicación directa basada en la teoría de comunicación <strong>Two-Step Flow</strong>, facilitando el flujo de información confiable a través de líderes de opinión estudiantiles.</p>
                         </div>
                         <button onclick="enterApp('messages')" class="mt-6 text-sm font-bold text-indigo-600 hover:underline flex items-center gap-1.5">
-                            Abrir Chat <i class="fas fa-arrow-right"></i>
+                            Abrir Chat <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
 
                     <!-- Beneficio 5 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-green-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-green-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-balance-scale"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Simulador de Cambio de Carrera</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso al simulador de cambios de carrera, que te permite saber qué materias pueden convalidar en caso de un cambio de licenciatura.</p>
                         </div>
                         <button onclick="enterApp('simulator')" class="mt-6 text-sm font-bold text-green-600 hover:underline flex items-center gap-1.5">
-                            Simular Convalidación <i class="fas fa-arrow-right"></i>
+                            Simular Convalidación <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
 
                     <!-- Beneficio 6 -->
-                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-orange-200 transition-all">
+                    <div class="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-orange-200 hover:shadow-lg transition-all group">
                         <div>
-                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-photo-video"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Contenido Multimedia Estudiantil</h3>
                             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">Acceso a contenido informativo (videos, imágenes, podcasts y lecturas) creado específicamente para responder a las dudas de la comunidad estudiantil.</p>
                         </div>
                         <button onclick="enterApp('resources')" class="mt-6 text-sm font-bold text-orange-600 hover:underline flex items-center gap-1.5">
-                            Explorar Recursos <i class="fas fa-arrow-right"></i>
+                            Explorar Recursos <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Banner Motion Graphic: Ilustración Interactiva del Modelo Two-Step Flow y Video -->
+                <div class="bg-gradient-to-r from-gray-900 via-slate-900 to-gray-900 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-6">
+                            <span class="bg-white/10 text-red-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3">
+                                Fundamento Teórico en Acción
+                            </span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold mb-3">Comunicación Two-Step Flow y Cápsulas Reales</h3>
+                            <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                                La información institucional y psicopedagógica conecta primero con <strong>Estudiantes Guía</strong> (pares de semestres avanzados que ya vivieron el proceso), quienes traducen la orientación en acompañamiento cercano y horizontal para el alumno de nuevo ingreso.
+                            </p>
+                            <button onclick="openVideo('Un Día en la Vida Universitaria: Cápsula Documental')" class="bg-upaep-red hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition inline-flex items-center gap-2.5 shadow-lg">
+                                <i class="fas fa-play"></i> Reproducir Cápsula Multimedia
+                            </button>
+                        </div>
+
+                        <!-- Ilustración SVG Animada del Flujo Two-Step Flow -->
+                        <div class="lg:col-span-6">
+                            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6">
+                                <svg class="w-full h-36 sm:h-44" viewBox="0 0 500 160" fill="none">
+                                    <!-- Líneas conectoras animadas -->
+                                    <path d="M95 80 C 155 80, 175 80, 230 80" stroke="#E3000F" stroke-width="3" class="svg-dash-flow" />
+                                    <path d="M270 80 C 330 80, 345 40, 405 40" stroke="#60A5FA" stroke-width="2.5" class="svg-dash-flow" />
+                                    <path d="M270 80 C 330 80, 345 120, 405 120" stroke="#34D399" stroke-width="2.5" class="svg-dash-flow" />
+
+                                    <!-- Nodo 1: Psicopedagogía / Información -->
+                                    <circle cx="65" cy="80" r="32" fill="#1E293B" stroke="#E3000F" stroke-width="3" />
+                                    <text x="65" y="76" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="bold">Expertos</text>
+                                    <text x="65" y="91" text-anchor="middle" fill="#94A3B8" font-size="9">Info Oficial</text>
+
+                                    <!-- Nodo 2: Líderes de Opinión (Estudiantes Guía) -->
+                                    <circle cx="250" cy="80" r="36" fill="#E3000F" />
+                                    <circle cx="250" cy="80" r="43" stroke="#E3000F" stroke-width="1.5" stroke-opacity="0.5" class="pulse-soft" />
+                                    <text x="250" y="76" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="bold">Guías Pares</text>
+                                    <text x="250" y="91" text-anchor="middle" fill="#FECACA" font-size="9">Paso 1 (Mentoría)</text>
+
+                                    <!-- Nodo 3A: Estudiante 17-20 años -->
+                                    <circle cx="430" cy="42" r="26" fill="#1E293B" stroke="#60A5FA" stroke-width="2.5" />
+                                    <text x="430" y="40" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold">Prepa</text>
+                                    <text x="430" y="52" text-anchor="middle" fill="#93C5FD" font-size="8">17-18 años</text>
+
+                                    <!-- Nodo 3B: Estudiante Primer Ingreso -->
+                                    <circle cx="430" cy="118" r="26" fill="#1E293B" stroke="#34D399" stroke-width="2.5" />
+                                    <text x="430" y="116" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold">1er Ingreso</text>
+                                    <text x="430" y="128" text-anchor="middle" fill="#6EE7B7" font-size="8">18-20 años</text>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Modelo Comercial y Precio -->
-        <section id="modelo-comercial" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="modelo-comercial" class="py-12 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
             <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
                 <span class="text-upaep-red font-extrabold text-xs uppercase tracking-widest block mb-2">Estructura de Negocio</span>
                 <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900">Modelo Comercial y Membresía</h2>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
-                <!-- Segmento de Clientes y Canales -->
+                <!-- Segmento de Clientes (Con Imagen) y Canales -->
                 <div class="lg:col-span-7 flex flex-col gap-6 justify-between">
-                    <div class="bg-white p-6 sm:p-10 rounded-3xl border border-gray-100 shadow-sm">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <div>
-                                <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Público Objetivo (Usuario Final)</span>
-                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Segmento de Clientes</h3>
-                            </div>
+                    <!-- Tarjeta Segmento con Fotografía -->
+                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+                        <div class="sm:w-2/5 relative min-h-[180px]">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Jóvenes universitarios de 17 a 20 años" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:hidden"></div>
+                            <span class="absolute bottom-3 left-3 bg-gray-900/85 backdrop-blur text-white text-xs font-bold px-3 py-1 rounded-full">
+                                17 a 20 años
+                            </span>
                         </div>
-                        <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
-                            El producto va dirigido a <strong>estudiantes de 17 a 20 años</strong> que están ingresando o cursando sus primeros semestres de universidad, para llevar un control respecto a sus dudas e inquietudes sobre su carrera y vocación, mientras la contratación se realiza de forma institucional por parte de las universidades.
-                        </p>
+                        <div class="p-6 sm:p-8 sm:w-3/5 flex flex-col justify-center">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600 block">Público Objetivo</span>
+                                    <h3 class="text-xl font-bold text-gray-900">Segmento de Clientes</h3>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                                El producto va dirigido a <strong>estudiantes de 17 a 20 años</strong> que están ingresando o cursando sus primeros semestres de universidad, para llevar un control respecto a sus dudas e inquietudes sobre su carrera y vocación.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="bg-white p-6 sm:p-10 rounded-3xl border border-gray-100 shadow-sm">
+                    <!-- Tarjeta Canales de Distribución y Venta -->
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm">
                         <div class="flex items-center gap-4 mb-4">
                             <div class="w-12 h-12 rounded-2xl bg-red-50 text-upaep-red flex items-center justify-center text-xl shrink-0">
                                 <i class="fas fa-bullhorn"></i>
@@ -420,7 +635,10 @@
                                 Las universidades pueden hacerse con los servicios de la plataforma <strong>“Brújula Universitaria”</strong> adquiriendo la membresía anual.
                             </p>
 
-                            <div class="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-6 mb-6 sm:mb-8">
+                            <div class="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-6 mb-6 sm:mb-8 relative overflow-hidden">
+                                <div class="absolute right-4 top-4 text-white/10 text-5xl">
+                                    <i class="fas fa-university"></i>
+                                </div>
                                 <span class="text-xs text-gray-300 uppercase font-bold tracking-wider block mb-1">Costo de Membresía Anual</span>
                                 <div class="flex flex-wrap items-baseline gap-2">
                                     <span class="text-3xl sm:text-5xl font-black text-white">$500,000</span>
@@ -597,13 +815,14 @@
             <i class="fas fa-times"></i>
         </button>
         <div class="w-full max-w-4xl aspect-video bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl flex items-center justify-center relative overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-5 sm:p-8">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80" alt="Vista previa de video" class="absolute inset-0 w-full h-full object-cover opacity-35">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end p-5 sm:p-8">
                 <div class="text-white">
                     <span class="bg-upaep-red text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide mb-2 inline-block">Reproduciendo</span>
                     <h2 id="video-title" class="text-lg sm:text-3xl font-bold">Título del Video</h2>
                 </div>
             </div>
-            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform">
+            <div onclick="showToast('Reproduciendo contenido audiovisual...')" class="w-16 h-16 sm:w-20 sm:h-20 bg-upaep-red/90 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform shadow-xl shadow-red-600/40 relative z-10">
                 <i class="fas fa-play text-white text-2xl sm:text-3xl ml-1"></i>
             </div>
         </div>
@@ -613,6 +832,26 @@
     <div id="toast-container" class="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
 
     <script>
+        // ==========================================
+        // ANIMACIONES DE SCROLL EN LA LANDING PAGE
+        // ==========================================
+        function initScrollAnimations() {
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                        }
+                    });
+                }, { threshold: 0.12 });
+
+                revealElements.forEach(el => observer.observe(el));
+            } else {
+                revealElements.forEach(el => el.classList.add('is-visible'));
+            }
+        }
+
         // ==========================================
         // CONTROL DE TRANSICIÓN LANDING <-> APP
         // ==========================================
@@ -643,6 +882,7 @@
             app.classList.add('hidden');
             app.classList.remove('flex');
             document.getElementById('landing-page').classList.remove('hidden');
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-visible'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -844,7 +1084,7 @@
                             
                             <!-- Video Destacado -->
                             <div onclick="openVideo('Un Día en: Ingeniería Industrial')" class="bg-gray-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer transition group relative min-h-[190px] sm:h-[200px]">
-                                <img src="https://placehold.co/600x300/1A1A1A/666666?text=Video" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity" alt="Video">
+                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=700&q=80" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity" alt="Video">
                                 <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
                                     <div class="w-11 h-11 sm:w-12 sm:h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                                         <i class="fas fa-play text-white ml-1"></i>
@@ -922,7 +1162,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                             <div onclick="openVideo('Un Día en Arquitectura')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
                                 <div class="relative h-44 sm:h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Arquitectura" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Arquitectura">
+                                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-65 group-hover:opacity-45 transition-opacity" alt="Arquitectura">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -938,7 +1178,7 @@
                             
                             <div onclick="openVideo('Un Día en Psicología')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
                                 <div class="relative h-44 sm:h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Psicologia" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Psicología">
+                                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-65 group-hover:opacity-45 transition-opacity" alt="Psicología">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -954,7 +1194,7 @@
 
                             <div onclick="openVideo('Un Día en Ing. Industrial')" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg cursor-pointer transition group flex flex-col">
                                 <div class="relative h-44 sm:h-48 bg-gray-900">
-                                    <img src="https://placehold.co/400x250/1A1A1A/555555?text=Industrial" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Industrial">
+                                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-65 group-hover:opacity-45 transition-opacity" alt="Industrial">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <i class="fas fa-play text-white ml-1 text-xl"></i>
@@ -2003,8 +2243,9 @@
             }, 3200);
         }
 
-        // Inicializar vista por defecto en la plataforma para cuando el usuario entre
+        // Inicializar animaciones y vista por defecto
         document.addEventListener('DOMContentLoaded', () => {
+            initScrollAnimations();
             navigate('home');
         });
     </script>
